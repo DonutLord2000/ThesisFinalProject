@@ -18,17 +18,19 @@
                 </div>
                 
                 @if (auth()->user()->role == 'admin')
-                <x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
-                    {{ __('Users') }}
-                </x-nav-link>
+                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
+                        {{ __('Users') }}
+                    </x-nav-link>
                 @endif
+                
                 @if (auth()->user()->role == 'student')
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Lessons') }}
                     </x-nav-link>
                 @endif
+                
                 @if (auth()->user()->role == 'alumni')
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Courses') }}
                     </x-nav-link>
                 @endif
