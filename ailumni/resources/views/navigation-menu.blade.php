@@ -16,6 +16,22 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                
+                @if (auth()->user()->role == 'admin')
+                <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    {{ __('Users') }}
+                </x-nav-link>
+                @endif
+                @if (auth()->user()->role == 'student')
+                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                        {{ __('Lessons') }}
+                    </x-nav-link>
+                @endif
+                @if (auth()->user()->role == 'alumni')
+                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                        {{ __('Courses') }}
+                    </x-nav-link>
+                @endif
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ms-6">
