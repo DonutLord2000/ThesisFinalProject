@@ -31,7 +31,7 @@
                 
                 @if (auth()->user()->role == 'alumni')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Courses') }}
+                        {{ __('Alumni Profile') }}
                     </x-nav-link>
                 @endif
             </div>
