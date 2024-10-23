@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Alumni\UpdateAlumniProfileInformation;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +34,9 @@ route::get('/home', [IndexController::class,'index']);
 
 Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin', 'as' => 'admin.'], function() {
     Route::resource('users', UserController::class);
+});
+
+
+Route::middleware(['auth', 'alumni'])->group(function () {
+    Route::get('/alumni/profile', [UpdateAlumniProfileInformation::class, 'index'])->name('alumni.profile.show');
 });
