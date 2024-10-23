@@ -59,6 +59,54 @@
                 {{ $state['name'] }}
             </div>
         </div>
+
+        <div class="col-span-6 sm:col-span-4">
+            @if (Auth::user()->role === 'alumni') <!-- Check if the user has the alumni role -->
+            <!-- Contact Info -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="contact_info" value="{{ __('Contact Info') }}" />
+                <x-input id="contact_info" type="text" class="mt-1 block w-full" wire:model.defer="state.contact_info" autocomplete="contact-info" />
+                <x-input-error for="contact_info" class="mt-2" />
+            </div>
+
+            <!-- Jobs -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="jobs" value="{{ __('Jobs') }}" />
+                <x-input id="jobs" type="text" class="mt-1 block w-full" wire:model.defer="state.jobs" autocomplete="jobs" />
+                <x-input-error for="jobs" class="mt-2" />
+            </div>
+
+            <!-- Achievements -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="achievements" value="{{ __('Achievements') }}" />
+            
+                <!-- Input field for adding new achievements -->
+                <input type="text" id="newAchievement" class="block w-full mt-1" placeholder="Enter an achievement" />
+            
+                <button type="button" id="addAchievementBtn" class="mt-2 bg-blue-500 text-white px-4 py-1 rounded">
+                    Add Achievement
+                </button>
+            
+                <!-- Display list of added achievements -->
+                <ul id="achievementsList" class="mt-3">
+                    <!-- Achievements will be dynamically inserted here -->
+                </ul>
+            
+                <!-- Hidden input to store achievements as a comma-separated string -->
+                <textarea name="achievements" id="achievements" class="hidden" wire:model.defer="state.achievements"></textarea>
+                <x-input-error for="achievements" class="mt-2" />
+            </div>
+            
+            
+            <!-- Bio -->
+            <div class="col-span-6 sm:col-span-4">
+                <x-label for="bio" value="{{ __('Bio') }}" />
+                <textarea id="bio" rows="3" class="mt-1 block w-full rounded-md" wire:model.defer="state.bio" autocomplete="bio"></textarea>
+                <x-input-error for="bio" class="mt-2" />
+            </div>
+            
+        @endif
+        </div>
         
 
         <!-- Email -->
@@ -95,3 +143,53 @@
         </x-button>
     </x-slot>
 </x-form-section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let achievements = [];
+        
+        const addAchievementBtn = document.getElementById('addAchievementBtn');
+        const newAchievementInput = document.getElementById('newAchievement');
+        const achievementsList = document.getElementById('achievementsList');
+        const achievementsInput = document.getElementById('achievements');
+
+        // Add an achievement to the list
+        addAchievementBtn.addEventListener('click', function() {
+            const newAchievement = newAchievementInput.value.trim();
+            
+            if (newAchievement) {
+                achievements.push(newAchievement);
+                updateAchievementsList();
+                newAchievementInput.value = ''; // Clear the input
+                achievementsInput.value = achievements.join(','); // Update hidden textarea
+            }
+        });
+
+        // Update the displayed achievements list
+        function updateAchievementsList() {
+            achievementsList.innerHTML = '';
+            achievements.forEach((achievement, index) => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('bg-blue-100', 'p-2', 'my-1', 'rounded', 'flex', 'justify-between');
+                
+                listItem.innerHTML = `
+                    ${achievement}
+                    <button type="button" class="remove-btn" data-index="${index}">x</button>
+                `;
+
+                achievementsList.appendChild(listItem);
+            });
+
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = this.getAttribute('data-index');
+                    achievements.splice(index, 1);
+                    updateAchievementsList();
+                    achievementsInput.value = achievements.join(','); // Update hidden textarea
+                });
+            });
+        }
+    });
+</script>
+

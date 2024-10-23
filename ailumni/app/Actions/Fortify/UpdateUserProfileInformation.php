@@ -17,24 +17,49 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     public function update(User $user, array $input): void
     {
-        Validator::make($input, [
+        // Basic validation rules for all users
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-        ])->validateWithBag('updateProfileInformation');
+        ];
 
+        // Additional validation rules for alumni
+        if ($user->role === 'alumni') {
+            $rules = array_merge($rules, [
+                'contact_info' => ['nullable', 'string', 'max:255'],
+                'jobs' => ['nullable', 'string', 'max:255'],
+                'achievements' => ['nullable', 'array'], // Change to array for handling multiple achievements
+                'bio' => ['nullable', 'string'],
+            ]);
+        }
+
+        Validator::make($input, $rules)->validateWithBag('updateProfileInformation');
+
+        // Update the profile photo if provided
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
         }
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+        // Handle email verification for verified users
+        if ($input['email'] !== $user->email && $user instanceof MustVerifyEmail) {
             $this->updateVerifiedUser($user, $input);
         } else {
+            // Update the user's basic information
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
             ])->save();
+
+            // Also update the additional fields for alumni
+            if ($user->role === 'alumni') {
+                $user->forceFill([
+                    'contact_info' => $input['contact_info'] ?? null,
+                    'jobs' => $input['jobs'] ?? null,
+                    'achievements' => isset($input['achievements']) ? implode(',', $input['achievements']) : null, // Convert array to comma-separated string
+                    'bio' => $input['bio'] ?? null,
+                ])->save();
+            }
         }
     }
 

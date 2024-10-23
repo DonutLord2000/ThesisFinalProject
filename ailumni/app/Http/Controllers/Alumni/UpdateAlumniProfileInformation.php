@@ -5,54 +5,72 @@ namespace App\Http\Controllers\Alumni;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Illuminate\Support\Facades\Auth;
+use App\Actions\Fortify\UpdateUserProfileInformation;
 
 class UpdateAlumniProfileInformation extends Controller
 {
-    /**
-     * Validate and update the given user's profile information.
-     *
-     * @param  array<string, mixed>  $input
-     */
-    
-     public function index()
-     {
-         $users = User::all();
-         $user = Auth::user(); // Fetch all users from the database
-         return view('alumni.profile.show', compact('user'));
-     }
-    
-     public function update(User $user, array $input): void
+    protected $updateUserProfileInformation;
+
+    public function __construct(UpdateUserProfileInformation $updateUserProfileInformation)
     {
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-        ])->validateWithBag('updateProfileInformation');
-
-        if (isset($input['photo'])) {
-            $user->updateProfilePhoto($input['photo']);
-        }
-
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
-            $this->updateVerifiedUser($user, $input);
-        } else {
-            $user->forceFill([
-                'name' => $input['name'],
-                'email' => $input['email'],
-            ])->save();
-        }
+        $this->updateUserProfileInformation = $updateUserProfileInformation;
     }
 
     /**
+     * Show the alumni profile.
+     */
+    public function index()
+    {
+        $user = Auth::user(); // Get the authenticated user
+        return view('alumni.profile.show', compact('user'));
+    }
+
+    /**
+     * Validate and update the given user's profile information.
+     *
+     * @param \Illuminate\Http\Request $request
+     */
+    public function update(Request $request)
+    {
+        $user = Auth::user(); // Get the authenticated user
+
+        // Define validation rules
+        $rules = [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'contact_info' => ['nullable', 'string', 'max:255'],
+            'jobs' => ['nullable', 'string', 'max:255'],
+            'achievements' => ['nullable', 'string'],
+            'bio' => ['nullable', 'string'],
+        ];
+
+        // Validate the incoming request data
+        Validator::make($request->all(), $rules)->validateWithBag('updateProfileInformation');
+
+        // Handle achievements as a comma-separated string if needed
+        if ($request->has('achievements') && is_array($request->achievements)) {
+            $request->merge(['achievements' => implode(',', $request->achievements)]);
+        }
+
+        // Call the update method from the UpdateUserProfileInformation action
+        $this->updateUserProfileInformation->update($user, $request->all());
+
+        // Flash success message to session
+        session()->flash('status', 'Profile updated successfully.');
+
+        // Redirect to the alumni profile show route
+        return redirect()->route('alumni.profile.show', ['user' => $user]);
+    }
+    
+    /**
      * Update the given verified user's profile information.
      *
-     * @param  array<string, string>  $input
+     * @param User $user
+     * @param array $input
      */
     protected function updateVerifiedUser(User $user, array $input): void
     {
@@ -60,6 +78,10 @@ class UpdateAlumniProfileInformation extends Controller
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
+            'contact_info' => $input['contact_info'] ?? null,
+            'jobs' => $input['jobs'] ?? null,
+            'achievements' => $input['achievements'] ?? null,
+            'bio' => $input['bio'] ?? null,
         ])->save();
 
         $user->sendEmailVerificationNotification();
