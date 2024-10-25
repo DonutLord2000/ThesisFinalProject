@@ -48,6 +48,9 @@ class UpdateAlumniProfileInformation extends Controller
             'bio' => ['nullable', 'string'],
         ];
 
+        // Call the update method from the UpdateUserProfileInformation action
+        $this->updateUserProfileInformation->update($user, $request->all());
+
         // Validate the incoming request data
         Validator::make($request->all(), $rules)->validateWithBag('updateProfileInformation');
 
@@ -72,7 +75,7 @@ class UpdateAlumniProfileInformation extends Controller
             'email_verified_at' => null,
             'contact_info' => $input['contact_info'] ?? null,
             'jobs' => $input['jobs'] ?? null,
-            'achievements' => $input['achievements'] ?? null,
+            'achievements' => $input['achievements'] ?? '',
             'bio' => $input['bio'] ?? null,
         ])->save();
 

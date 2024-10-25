@@ -15,7 +15,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      *
      * @param  array<string, mixed>  $input
      */
-    public function update(User $user, array $input): void
+     public function update(User $user, array $input): void
     {
         // Basic validation rules for all users
         $rules = [
@@ -27,9 +27,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         // Additional validation rules for alumni
         if ($user->role === 'alumni') {
             $rules = array_merge($rules, [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+                'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
                 'contact_info' => ['nullable', 'string', 'max:255'],
                 'jobs' => ['nullable', 'string', 'max:255'],
-                'achievements' => ['nullable', 'string'], 
+                'achievements' => ['nullable', 'string'],
                 'bio' => ['nullable', 'string'],
             ]);
         }

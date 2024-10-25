@@ -77,12 +77,71 @@
             </div>
 
             <!-- Achievements -->
-            
             <div class="col-span-6 sm:col-span-4">
                 <x-label for="achievements" value="{{ __('Achievements') }}" />
-                <textarea id="achievements" rows="3" class="mt-1 block w-full rounded-md" wire:model.defer="state.achievements" autocomplete="achievements"></textarea>
+            
+                <!-- Textarea to display achievements -->
+                <textarea id="achievements" rows="3" class="mt-1 block w-full rounded-md" 
+                          wire:model.defer="state.achievements" style="display: none;" hidden></textarea>
+
+                <div id="achievements-list" class="mt-2">
+                    <!-- This will display the individual achievements with remove buttons -->
+                    @foreach(explode("\n", $state['achievements']) as $achievement)
+                        @if($achievement)
+                            <div class="flex items-center justify-between">
+                                <span>{{ $achievement }}</span>
+                                <button type="button" class="ml-2 text-red-500" onclick="removeAchievement('{{ $achievement }}')">X</button>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            
+                <!-- Input field for new achievements -->
+                <input type="text" id="new-achievement" class="mt-2 block w-full rounded-md" 
+                       placeholder="Add achievement..." />
+            
+                
+            
                 <x-input-error for="achievements" class="mt-2" />
-            </div>  
+            </div>
+            
+            <script>
+                document.getElementById('new-achievement').addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Prevent form submission on Enter
+            
+                        const achievementInput = this.value.trim();
+                        const achievementsTextarea = document.getElementById('achievements');
+            
+                        if (achievementInput) {
+                            // Append the new achievement to the textarea
+                            const existingAchievements = achievementsTextarea.value.trim();
+                            achievementsTextarea.value = existingAchievements ? existingAchievements + '\n' + achievementInput : achievementInput;
+            
+                            // Update the wire:model.defer property with the new achievements
+                            @this.set('state.achievements', achievementsTextarea.value);
+            
+                            // Clear the input field
+                            this.value = '';
+                        }
+                    }
+                });
+            
+                function removeAchievement(achievement) {
+                    const achievementsTextarea = document.getElementById('achievements');
+                    const existingAchievements = achievementsTextarea.value.split('\n');
+
+                    // Filter out the achievement to be removed
+                    const updatedAchievements = existingAchievements.filter(item => item !== achievement);
+
+                    // Join the remaining achievements back into a string
+                    achievementsTextarea.value = updatedAchievements.join('\n');
+
+                    // Update the wire:model.defer property with the new achievements
+                    @this.set('state.achievements', achievementsTextarea.value); // Ensure this line remains
+}
+
+            </script>
             
             
             <!-- Bio -->

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Alumni\UpdateAlumniProfileInformation;
+use App\Actions\Fortify\UpdateUserProfileInformation;
 
 /*
 |--------------------------------------------------------------------------
