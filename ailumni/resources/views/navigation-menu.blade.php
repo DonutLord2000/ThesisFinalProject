@@ -19,7 +19,7 @@
                 
                 @if (auth()->user()->role == 'admin')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
-                        {{ __('Users') }}
+                        {{ __('User Management') }}
                     </x-nav-link>
                 @endif
                 

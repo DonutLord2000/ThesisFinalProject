@@ -2,17 +2,17 @@
 
 @section('content')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            User List
-        </h2>
-    </x-slot>
-
     <div>
+        
         <div class="max-w-10rem mx-auto py-10 sm:px-6 lg:px-8" >
-            <div class="mx-auto" style="width: 70rem;">
-                <a href="{{ route('admin.users.create') }}" class="flex items-center justify-center w-full px-4 py-4 text-sm font-bold leading-6 capitalize duration-100 transform border-2 rounded-sm cursor-pointer border-green-300 focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:w-auto sm:px-6 border-text  hover:shadow-lg hover:-translate-y-1">Add User</a>
+            <h1 class="text-center text-2xl font-semibold mb-6">User List</h1>
+            
+            <div class="mx-auto" style="width: 70rem; display: flex; justify-content: flex-end;">
+                <a href="{{ route('admin.users.create') }}" class="btn-custom">
+                    Add User
+                </a>
             </div>
+            
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -73,10 +73,14 @@
                 
                                             <a href="{{ route('admin.users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">Edit</a>
                                             <form class="inline-block" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                                <input type="hidden" name="_method" value="DELETE">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                                <input type="submit" class="text-red-600 hover:text-red-900 mb-2 mr-2" value="Delete">
+                                                @csrf
+                                                @method('DELETE') <!-- This will handle the DELETE request -->
+                                                
+                                                <button type="submit" class="text-red-600 hover:text-red-900 focus:outline-none px-4 py-2 rounded-md mb-2 mr-2">
+                                                    Delete
+                                                </button>
                                             </form>
+                                            
                                         </td>
                                     </tr>
                                 @endforeach
@@ -88,6 +92,27 @@
             </div>
 
         </div>
+        <style>
+            .btn-custom {
+                background-color: #ff6b6b; /* Light red */
+                color: white; /* Text color */
+                font-weight: 600; /* Semi-bold */
+                padding: 0.5rem; /* Vertical padding */
+                border-radius: 0.375rem; /* Rounded corners */
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                transition: background-color 0.3s, transform 0.3s;
+                display: inline-flex; /* Center text within the button */
+                align-items: center; /* Vertically center text */
+                justify-content: center; /* Horizontally center text */
+                text-decoration: none; /* Remove underline */
+                margin-bottom: 1rem;
+            }
+        
+            .btn-custom:hover {
+                background-color: #ff4d4d; /* Darker shade on hover */
+                transform: scale(1.05); /* Slightly scale up on hover */
+            }
+        </style>
     </div>
 
 @endsection
