@@ -51,16 +51,8 @@ class UpdateAlumniProfileInformation extends Controller
         // Validate the incoming request data
         Validator::make($request->all(), $rules)->validateWithBag('updateProfileInformation');
 
-        // Handle achievements as a comma-separated string if needed
-        if ($request->has('achievements') && is_array($request->achievements)) {
-            $request->merge(['achievements' => implode(',', $request->achievements)]);
-        }
-
         // Call the update method from the UpdateUserProfileInformation action
         $this->updateUserProfileInformation->update($user, $request->all());
-
-        // Flash success message to session
-        session()->flash('status', 'Profile updated successfully.');
 
         // Redirect to the alumni profile show route
         return redirect()->route('alumni.profile.show', ['user' => $user]);

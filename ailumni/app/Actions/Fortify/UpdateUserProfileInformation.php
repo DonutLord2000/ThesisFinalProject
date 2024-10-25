@@ -29,7 +29,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $rules = array_merge($rules, [
                 'contact_info' => ['nullable', 'string', 'max:255'],
                 'jobs' => ['nullable', 'string', 'max:255'],
-                'achievements' => ['nullable', 'array'], // Change to array for handling multiple achievements
+                'achievements' => ['nullable', 'string'], 
                 'bio' => ['nullable', 'string'],
             ]);
         }
@@ -56,7 +56,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 $user->forceFill([
                     'contact_info' => $input['contact_info'] ?? null,
                     'jobs' => $input['jobs'] ?? null,
-                    'achievements' => isset($input['achievements']) ? implode(',', $input['achievements']) : null, // Convert array to comma-separated string
+                    'achievements' => $input['achievements'] ?? null,
                     'bio' => $input['bio'] ?? null,
                 ])->save();
             }
@@ -74,6 +74,10 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
+            'contact_info' => $input['contact_info'] ?? null,
+            'jobs' => $input['jobs'] ?? null,
+            'achievements' => $input['achievements'] ?? null,
+            'bio' => $input['bio'] ?? null,
         ])->save();
 
         $user->sendEmailVerificationNotification();
