@@ -19,24 +19,44 @@
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg mx-auto" style="width: 70rem;">
                             <table class="min-w-full divide-y divide-gray-200 w-full" style="width: 800px; table-layout: auto;">
                                 <thead>
-                                <tr>
-                                    <th scope="col" width="250" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Name
-                                    </th>
-                                    <th scope="col" width="400"class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Email
-                                    </th>
-                                    <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Role
-                                    </th>
-                                    <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Student ID
-                                    </th>
-                                    <th scope="col" width="200" class="px-6 py-3 bg-gray-50">
-
-                                    </th>
-                                </tr>
+                                    <tr>
+                                        <th scope="col" width="250" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'name', 'direction' => $sortColumn === 'name' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                                Name
+                                                @if($sortColumn === 'name') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th scope="col" width="400" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'email', 'direction' => $sortColumn === 'email' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                                Email
+                                                @if($sortColumn === 'email') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'role', 'direction' => $sortColumn === 'role' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                                Role
+                                                @if($sortColumn === 'role') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'student_id', 'direction' => $sortColumn === 'student_id' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                                Student ID
+                                                @if($sortColumn === 'student_id') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
+                                        </th>
+                                        <th scope="col" width="200" class="px-6 py-3 bg-gray-50">
+                                        </th>
+                                    </tr>
                                 </thead>
+                                
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($users as $user)
                                     <tr>
@@ -58,7 +78,7 @@
                                                     {{ $user->role }}
                                                 </span>
                                             @elseif($user->role == 'admin')
-                                                <span class="inline-block px-2 py-1 bg-red-500 text-red-800 rounded">
+                                                <span class="text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded">
                                                     {{ $user->role }}
                                                 </span>                                         
                                             @endif
