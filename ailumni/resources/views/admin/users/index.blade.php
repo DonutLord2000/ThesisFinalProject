@@ -12,7 +12,14 @@
                     Add User
                 </a>
             </div>
-            
+
+            <div class="mb-4">
+                <form method="GET" action="{{ route('admin.users.index') }}" class="flex mx-auto" style="width: 70rem;">
+                    <input type="text" name="search" placeholder="Search by name, email, or student ID..." class="border border-gray-300 rounded-full px-3 py-2 w-full" value="{{ request('search') }}">
+                    <button type="submit" class="ml-2 bg-blue-500 text-white rounded-md px-4 py-2">Search</button>
+                </form>
+            </div>
+                        
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">

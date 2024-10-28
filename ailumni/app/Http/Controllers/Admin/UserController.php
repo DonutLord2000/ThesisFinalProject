@@ -12,31 +12,39 @@ class UserController extends Controller
      * Display a listing of the users.
      */
     
-    public function index(Request $request)
-{
-    
-    // Default sort column and direction
-    $sortColumn = $request->get('sort', 'name'); 
-    $sortDirection = $request->get('direction', 'asc'); 
-
-    // Validate sort column and direction
-    $validSortColumns = ['name', 'email', 'role', 'student_id'];
-    $validSortDirections = ['asc', 'desc'];
-
-    if (!in_array($sortColumn, $validSortColumns) || !in_array($sortDirection, $validSortDirections)) {
-        $sortColumn = 'name'; // Default to name
-        $sortDirection = 'asc'; // Default to ascending
-    }
-
-    // Fetch users sorted by the chosen column and direction
-    $users = User::orderBy($sortColumn, $sortDirection)->get();
-
-    // Pass the users, sort column, and sort direction to the view
-    return view('admin.users.index', compact('users', 'sortColumn', 'sortDirection'));
-
-    $users = User::all(); // Fetch all users from the database
-        return view('admin.users.index', compact('users'));
-}
+     public function index(Request $request)
+     {
+         // Default sort column and direction
+         $sortColumn = $request->get('sort', 'name'); 
+         $sortDirection = $request->get('direction', 'asc'); 
+     
+         // Validate sort column and direction
+         $validSortColumns = ['name', 'email', 'role', 'student_id'];
+         $validSortDirections = ['asc', 'desc'];
+     
+         if (!in_array($sortColumn, $validSortColumns) || !in_array($sortDirection, $validSortDirections)) {
+             $sortColumn = 'name'; // Default to name
+             $sortDirection = 'asc'; // Default to ascending
+         }
+     
+         // Get the search input from the request
+         $search = $request->input('search');
+     
+         // Fetch users with search functionality and sort
+         $users = User::query()
+             ->when($search, function ($query, $search) {
+                 return $query->where(function ($q) use ($search) {
+                     $q->where('name', 'LIKE', '%' . $search . '%')
+                       ->orWhere('email', 'LIKE', '%' . $search . '%')
+                       ->orWhere('student_id', 'LIKE', '%' . $search . '%');
+                 });
+             })
+             ->orderBy($sortColumn, $sortDirection)
+             ->get();
+     
+         // Pass the users, sort column, sort direction, and search input to the view
+         return view('admin.users.index', compact('users', 'sortColumn', 'sortDirection', 'search'));
+     }     
 
 
     /**
