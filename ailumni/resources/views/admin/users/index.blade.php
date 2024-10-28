@@ -28,7 +28,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" width="250" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            <a href="{{ route('admin.users.index', ['sort' => 'name', 'direction' => $sortColumn === 'name' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'name', 'direction' => $sortColumn === 'name' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                                                 Name
                                                 @if($sortColumn === 'name') 
                                                     <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
@@ -36,7 +36,7 @@
                                             </a>
                                         </th>
                                         <th scope="col" width="400" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            <a href="{{ route('admin.users.index', ['sort' => 'email', 'direction' => $sortColumn === 'email' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'email', 'direction' => $sortColumn === 'email' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                                                 Email
                                                 @if($sortColumn === 'email') 
                                                     <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
@@ -44,7 +44,7 @@
                                             </a>
                                         </th>
                                         <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            <a href="{{ route('admin.users.index', ['sort' => 'role', 'direction' => $sortColumn === 'role' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'role', 'direction' => $sortColumn === 'role' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                                                 Role
                                                 @if($sortColumn === 'role') 
                                                     <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
@@ -52,7 +52,7 @@
                                             </a>
                                         </th>
                                         <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            <a href="{{ route('admin.users.index', ['sort' => 'student_id', 'direction' => $sortColumn === 'student_id' && $sortDirection === 'asc' ? 'desc' : 'asc']) }}">
+                                            <a href="{{ route('admin.users.index', ['sort' => 'student_id', 'direction' => $sortColumn === 'student_id' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
                                                 Student ID
                                                 @if($sortColumn === 'student_id') 
                                                     <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
@@ -67,47 +67,26 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $user->name }}
-                                        </td>
-
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $user->email }}
-                                        </td>
-                                        
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->name }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->email }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             @if($user->role == 'student')
-                                                <span class="inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded">
-                                                    {{ $user->role }}
-                                                </span>
+                                                <span class="inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded">{{ $user->role }}</span>
                                             @elseif($user->role == 'alumni')
-                                                <span class="inline-block px-2 py-1 bg-green-500 text-green-800 rounded">
-                                                    {{ $user->role }}
-                                                </span>
+                                                <span class="inline-block px-2 py-1 bg-green-500 text-green-800 rounded">{{ $user->role }}</span>
                                             @elseif($user->role == 'admin')
-                                                <span class="text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded">
-                                                    {{ $user->role }}
-                                                </span>                                         
+                                                <span class="text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded">{{ $user->role }}</span>                                         
                                             @endif
                                         </td>
-                                        
-                                
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {{ $user->student_id }}
-                                        </td>
-
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->student_id }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                
                                             <a href="{{ route('admin.users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">Edit</a>
                                             <form class="inline-block" action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                 @csrf
                                                 @method('DELETE') <!-- This will handle the DELETE request -->
                                                 
-                                                <button type="submit" class="text-red-600 hover:text-red-900 focus:outline-none px-4 py-2 rounded-md mb-2 mr-2">
-                                                    Delete
-                                                </button>
+                                                <button type="submit" class="text-red-600 hover:text-red-900 focus:outline-none px-4 py-2 rounded-md mb-2 mr-2">Delete</button>
                                             </form>
-                                            
                                         </td>
                                     </tr>
                                 @endforeach
