@@ -23,7 +23,11 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
-    protected $fillable = [
+     public function roles()
+     {
+         return $this->belongsToMany(Role::class);
+     }
+     protected $fillable = [
         'name',
         'email',
         'password',
