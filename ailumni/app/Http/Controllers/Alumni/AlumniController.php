@@ -42,9 +42,10 @@ class AlumniController extends Controller
     }
 
 
-    public function show(User $user)
+    public function view($name)
     {
-        return view('alumni.profile.index', compact('user'));
+        $alumni = User::where('name', $name)->firstOrFail(); // Fetch the alumni profile by name
+        return view('alumni.profile.view', compact('alumni'));
     }
 
     public function create()

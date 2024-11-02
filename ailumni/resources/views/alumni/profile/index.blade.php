@@ -69,14 +69,14 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->jobs }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             @foreach(explode("\n", $alum->achievements) as $achievement)
-                                                <div class="text-blue-800 px-2 py-1 rounded mb-2" style="background-color: #7dc7f0;">
+                                                <div class="text-blue-800 px-2 py-1 rounded mb-2" style="background-color: #7dc7f0; ">
                                                     {{ $achievement }}
                                                 </div>
                                             @endforeach
                                         </td>                                                                            
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->bio }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a href="{{ route('alumni.profile.index', $alum->id) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">View</a>
+                                            <a href="{{ route('alumni.profile.view', $alum->name) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">View</a>
                                         </td>
                                     </tr>
                                 @endforeach
