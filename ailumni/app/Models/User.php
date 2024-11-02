@@ -68,4 +68,9 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function scopeAlumni($query)
+    {
+        return $query->where('role', 'alumni');
+    }
 }

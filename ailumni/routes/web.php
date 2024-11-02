@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Alumni\UpdateAlumniProfileInformation;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Controllers\Alumni\AlumniController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -44,3 +46,8 @@ Route::middleware(['auth', 'alumni'])->group(function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.profile.index');
+Route::get('/alumni/{user}', [AlumniController::class, 'show'])->name('alumni.profile.index');
+Route::get('/alumni/create', [AlumniController::class, 'create'])->name('alumni.profile.index');
+Route::post('/alumni', [AlumniController::class, 'store'])->name('alumni.profile.index');
