@@ -9,25 +9,38 @@ use App\Http\Controllers\Controller;
 class AlumniController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search');
-        
-        // Retrieve only users with the role 'alumni'
-        $alumni = User::alumni() // This scope will limit results to only alumni
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('contact_info', 'like', "%{$search}%")
-                      ->orWhere('jobs', 'like', "%{$search}%")
-                      ->orWhere('achievements', 'like', "%{$search}%")
-                      ->orWhere('bio', 'like', "%{$search}%");
-                });
-            })
-            ->paginate(10);
+{
+    $search = $request->input('search');
 
-        return view('alumni.profile.index', compact('alumni'));
+    // Set default sort column and direction
+    $sortColumn = $request->get('sort', 'name'); // Default to sorting by name
+    $sortDirection = $request->get('direction', 'asc'); // Default to ascending order
+
+    // Validate sort column and direction
+    $allowedSorts = ['name', 'email'];
+    if (!in_array($sortColumn, $allowedSorts) || !in_array($sortDirection, ['asc', 'desc'])) {
+        $sortColumn = 'name';
+        $sortDirection = 'asc';
     }
+
+    // Retrieve only users with the role 'alumni'
+    $alumni = User::alumni() // Use the scope here
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('contact_info', 'like', "%{$search}%")
+                  ->orWhere('jobs', 'like', "%{$search}%")
+                  ->orWhere('achievements', 'like', "%{$search}%")
+                  ->orWhere('bio', 'like', "%{$search}%");
+            });
+        })
+    ->orderBy($sortColumn, $sortDirection) // Sort based on the selected column and direction
+    ->paginate(10);
+
+    return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection', 'search'));
+    }
+
 
     public function show(User $user)
     {

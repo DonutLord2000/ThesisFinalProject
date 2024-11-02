@@ -26,15 +26,25 @@
                                 <thead>
                                     <tr>
                                         <th scope="col" width="250" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Name
+                                            <a href="{{ route('alumni.profile.index', ['sort' => 'name', 'direction' => $sortColumn === 'name' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                                                Name
+                                                @if($sortColumn === 'name') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
                                         </th>
-                                        <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Email
+                                        <th scope="col" width="400" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <a href="{{ route('alumni.profile.index', ['sort' => 'email', 'direction' => $sortColumn === 'email' && $sortDirection === 'asc' ? 'desc' : 'asc', 'search' => request('search')]) }}">
+                                                Email
+                                                @if($sortColumn === 'email') 
+                                                    <span>{{ $sortDirection === 'asc' ? '↑' : '↓' }}</span> 
+                                                @endif
+                                            </a>
                                         </th>
                                         <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Contact Info
                                         </th>
-                                        <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th scope="col" width="150" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Jobs
                                         </th>
                                         <th scope="col" width="200" class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -58,8 +68,12 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->contact_info }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->jobs }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {!! nl2br(e($alum->achievements)) !!}
-                                        </td>                                        
+                                            @foreach(explode("\n", $alum->achievements) as $achievement)
+                                                <div class="text-blue-800 px-2 py-1 rounded mb-2" style="background-color: #7dc7f0;">
+                                                    {{ $achievement }}
+                                                </div>
+                                            @endforeach
+                                        </td>                                                                            
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->bio }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <a href="{{ route('alumni.profile.index', $alum->id) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">View</a>
