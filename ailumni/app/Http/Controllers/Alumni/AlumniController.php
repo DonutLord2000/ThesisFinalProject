@@ -24,23 +24,27 @@ class AlumniController extends Controller
     }
 
     // Retrieve only users with the role 'alumni'
-    $alumni = User::alumni() // Use the scope here
+    $alumni = User::alumni()
         ->when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('contact_info', 'like', "%{$search}%")
                   ->orWhere('jobs', 'like', "%{$search}%")
-                  ->orWhere('achievements', 'like', "%{$search}%")
-                  ->orWhere('bio', 'like', "%{$search}%");
+                  ->orWhere('achievements', 'like', "%{$search}%");
             });
         })
-    ->orderBy($sortColumn, $sortDirection) // Sort based on the selected column and direction
-    ->paginate(10);
+        ->orderBy($sortColumn, $sortDirection)
+        ->paginate(10);
 
-    return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection', 'search'));
+    // Check if the request is an AJAX request
+    if ($request->ajax()) {
+        return view('alumni.partials.table_rows', compact('alumni'));
     }
 
+    // For non-AJAX requests, return the full view
+    return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection', 'search'));
+}
 
     public function view($name)
     {
