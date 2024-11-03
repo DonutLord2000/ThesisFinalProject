@@ -1,7 +1,7 @@
 @foreach ($alumni as $alum)
     <tr>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            <img src="{{ $alum->profile_photo_url }}" alt="Profile Photo" class="w-10 h-10 rounded-full mr-4">
+            <img src="{{ $alum->profile_photo_url }}" alt="Profile Photo" style="width: 50px; height: 50px;" class="rounded-full mr-4">
             {{ $alum->name }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $alum->email }}</td>
