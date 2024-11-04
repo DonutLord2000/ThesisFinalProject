@@ -54,11 +54,15 @@
                 <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-lg font-semibold mb-4">Monthly User Registrations</h3>
-                        <canvas id="monthlyRegistrationsChart"></canvas>
+                        <div style="position: relative; height: 200px;">
+                            <canvas id="monthlyRegistrationsChart"></canvas>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-lg shadow-md">
                         <h3 class="text-lg font-semibold mb-4">Alumni Employment Rate</h3>
-                        <canvas id="alumniEmploymentChart"></canvas>
+                        <div style="position: relative; height: 200px;">
+                            <canvas id="alumniEmploymentChart"></canvas>
+                        </div>
                     </div>
                 </div>
 
@@ -73,7 +77,7 @@
                             <h4 class="text-md font-semibold">Weekly Active Users</h4>
                             <p class="text-2xl font-bold">{{ $weeklyActiveUsers }}</p>
                         </div>
-                        <div class="flex-1 bg-gray-100 p-4 rounded-lg">
+                        <div class="flex-1 bg-gray-100 p-4 rounded-lg" style="">
                             <h4 class="text-md font-semibold">Monthly Active Users</h4>
                             <p class="text-2xl font-bold">{{ $monthlyActiveUsers }}</p>
                         </div>
@@ -86,52 +90,63 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Monthly Registrations Chart
-        var monthlyCtx = document.getElementById('monthlyRegistrationsChart').getContext('2d');
-        var monthlyChart = new Chart(monthlyCtx, {
-            type: 'line',
-            data: {
-                labels: @json($monthlyLabels),
-                datasets: [{
-                    label: 'New Registrations',
-                    data: @json($monthlyData),
-                    borderColor: 'rgb(59, 130, 246)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+        document.addEventListener('DOMContentLoaded', function() {
+            // Monthly Registrations Chart
+            var monthlyCtx = document.getElementById('monthlyRegistrationsChart').getContext('2d');
+            var monthlyChart = new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: @json($monthlyLabels),
+                    datasets: [{
+                        label: 'New Registrations',
+                        data: @json($monthlyData),
+                        backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Alumni Employment Rate Chart
-        var alumniCtx = document.getElementById('alumniEmploymentChart').getContext('2d');
-        var alumniChart = new Chart(alumniCtx, {
-            type: 'bar',
-            data: {
-                labels: @json($employmentLabels),
-                datasets: [{
-                    label: 'Employment Rate (%)',
-                    data: @json($employmentData),
-                    backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                    borderColor: 'rgb(16, 185, 129)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
+            // Alumni Employment Rate Chart
+            var alumniCtx = document.getElementById('alumniEmploymentChart').getContext('2d');
+            var alumniChart = new Chart(alumniCtx, {
+                type: 'bar',
+                data: {
+                    labels: @json($employmentLabels),
+                    datasets: [{
+                        label: 'Employment Rate (%)',
+                        data: @json($employmentData),
+                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        borderColor: 'rgb(16, 185, 129)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
                     }
                 }
-            }
+            });
         });
     </script>
     @endpush

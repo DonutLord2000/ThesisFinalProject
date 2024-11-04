@@ -27,30 +27,29 @@ class DashboardController extends Controller
         $monthlyLabels = [];
         $monthlyData = [];
         for ($i = 5; $i >= 0; $i--) {
-            $date = Carbon::now()->subMonths($i);
+            $date = now()->subMonths($i);
             $monthlyLabels[] = $date->format('M');
             $monthlyData[] = User::whereYear('created_at', $date->year)
-                                 ->whereMonth('created_at', $date->month)
-                                 ->count();
+                                ->whereMonth('created_at', $date->month)
+                                ->count();
         }
 
         // Prepare data for alumni employment chart
-        $employmentLabels = [Carbon::now()->subYear()->year, Carbon::now()->year, Carbon::now()->addYear()->year];
+        $employmentLabels = [now()->subYear()->year, now()->year, now()->addYear()->year];
         $employmentData = [];
-
         foreach ($employmentLabels as $year) {
             $totalAlumni = User::where('role', 'alumni')
-                               ->whereYear('created_at', '<=', $year)
-                               ->count();
-
+                            ->whereYear('created_at', '<=', $year)
+                            ->count();
             $employedAlumni = User::where('role', 'alumni')
-                                  ->where('is_employed', 'yes')
-                                  ->whereYear('created_at', '<=', $year)
-                                  ->count();
-
-            $yearEmploymentRate = $totalAlumni > 0 ? round(($employedAlumni / $totalAlumni) * 100) : 0;
-            $employmentData[] = $yearEmploymentRate;
+                                ->where('is_employed', 'yes')
+                                ->whereYear('created_at', '<=', $year)
+                                ->count();
+            $employmentRate = $totalAlumni > 0 ? round(($employedAlumni / $totalAlumni) * 100) : 0;
+            $employmentData[] = $employmentRate;
         }
+        \Log::debug('Monthly Data:', ['labels' => $monthlyLabels, 'data' => $monthlyData]);
+        \Log::debug('Employment Data:', ['labels' => $employmentLabels, 'data' => $employmentData]);
 
         // Calculate active users (this is a simplified version, you might want to adjust based on your definition of "active")
         $dailyActiveUsers = User::where('last_login_at', '>=', Carbon::now()->subDay())->count();
