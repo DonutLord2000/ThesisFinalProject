@@ -91,10 +91,10 @@
         var monthlyChart = new Chart(monthlyCtx, {
             type: 'line',
             data: {
-                labels: {!! json_encode($monthlyLabels) !!},
+                labels: @json($monthlyLabels),
                 datasets: [{
                     label: 'New Registrations',
-                    data: {!! json_encode($monthlyData) !!},
+                    data: @json($monthlyData),
                     borderColor: 'rgb(59, 130, 246)',
                     tension: 0.1
                 }]
@@ -114,10 +114,10 @@
         var alumniChart = new Chart(alumniCtx, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($employmentLabels) !!},
+                labels: @json($employmentLabels),
                 datasets: [{
                     label: 'Employment Rate (%)',
-                    data: {!! json_encode($employmentData) !!},
+                    data: @json($employmentData),
                     backgroundColor: 'rgba(16, 185, 129, 0.6)',
                     borderColor: 'rgb(16, 185, 129)',
                     borderWidth: 1
