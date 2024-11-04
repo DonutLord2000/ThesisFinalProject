@@ -25,4 +25,14 @@ class Thread extends Model
     {
         return $this->hasMany(Reaction::class);
     }
+
+    public function upvotes()
+    {
+        return $this->reactions()->where('type', 'upvote');
+    }
+
+    public function hearts()
+    {
+        return $this->reactions()->where('type', 'heart');
+    }
 }
