@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Thread;
 use App\Models\Comment;
-use App\Models\Reaction;
+use App\Models\Reaction; 
 use Illuminate\Http\Request;
 
 class ThreadController extends Controller
@@ -57,9 +57,10 @@ class ThreadController extends Controller
             $message = 'Reaction added';
         }
 
+        // Recalculate the counts
         $counts = [
-            'upvotes' => $thread->upvotes()->count(),
-            'hearts' => $thread->hearts()->count(),
+            'upvotes' => $thread->reactions()->where('type', 'upvote')->count(),
+            'hearts' => $thread->reactions()->where('type', 'heart')->count(),
         ];
 
         return response()->json(['message' => $message, 'counts' => $counts]);

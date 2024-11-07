@@ -7,7 +7,7 @@
 
     <div class="py-12 mx-auto" style="width: 80rem;">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mx-auto" style="width: 70rem">
                 <h3 class="text-lg font-semibold mb-4">Create a new post</h3>
                 <form action="{{ route('threads.store') }}" method="POST">
                     @csrf
@@ -23,27 +23,29 @@
                         Create post
                     </button>
                 </form>
-
-                <hr class="my-8" style="margin-bottom: 2rem; margin-top: 2rem;">
-
-                <h3 class="text-lg font-semibold mb-4">Recent Discussion</h3>
-                @foreach ($threads as $thread)
-                    <div class="mb-4 p-4 border rounded-lg">
-                        <h4 class="text-xl font-semibold">
-                            <a href="{{ route('threads.show', $thread) }}" class="text-indigo-600 hover:text-indigo-800">{{ $thread->title }}</a>
-                        </h4>
-                        <p class="text-gray-600 text-sm">Posted by {{ $thread->user->name }} on {{ $thread->created_at->format('M d, Y') }}</p>
-                        <p class="mt-2">{{ Str::limit($thread->content, 150) }}</p>
-                        <div class="mt-2 text-sm text-gray-500">
-                            <span>{{ $thread->upvotes }} upvotes</span>
-                            <span class="ml-2">{{ $thread->hearts }} hearts</span>
-                            <span class="ml-2">{{ $thread->comments_count }} comments</span>
-                        </div>
-                    </div>
-                @endforeach
-
-                {{ $threads->links() }}
             </div>
+
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mx-auto" style="margin-top: 20px; width: 70rem">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h3 class="text-lg font-semibold mb-4">Recent Discussion</h3>
+            @foreach ($threads as $thread)
+                <div class="mb-4 p-4 border rounded-lg">
+                    <h4 class="text-xl font-semibold">
+                        <a href="{{ route('threads.show', $thread) }}" class="text-indigo-600 hover:text-indigo-800">{{ $thread->title }}</a>
+                    </h4>
+                    <p class="text-gray-600 text-sm">Posted by {{ $thread->user->name }} on {{ $thread->created_at->format('M d, Y') }}</p>
+                    <p class="mt-2">{{ Str::limit($thread->content, 150) }}</p>
+                    <div class="mt-2 text-sm text-gray-500">
+                        <span>{{ $thread->upvotes }} upvotes</span>
+                        <span class="ml-2">{{ $thread->hearts }} hearts</span>
+                        <span class="ml-2">{{ $thread->comments_count }} comments</span>
+                    </div>
+                </div>
+            @endforeach
+
+            {{ $threads->links() }}
+            </div>
+        </div>
         </div>
     </div>
 </x-app-layout>

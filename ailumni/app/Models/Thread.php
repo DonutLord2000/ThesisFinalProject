@@ -35,4 +35,13 @@ class Thread extends Model
     {
         return $this->reactions()->where('type', 'heart');
     }
+
+    public function getUpvotesAttribute() {
+        return $this->reactions()->where('type', 'upvote')->count();
+    }
+    
+    public function getHeartsAttribute() {
+        return $this->reactions()->where('type', 'heart')->count();
+    }
+    
 }

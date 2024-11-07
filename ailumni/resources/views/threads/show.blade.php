@@ -1,15 +1,11 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ $thread->title }}
-        </h2>
-    </x-slot>
+    
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mx-auto" style="width: 70rem">
                 <div class="mb-6">
-                    <h3 class="text-2xl font-semibold mb-2">{{ $thread->title }}</h3>
+                    <h3 class="text-2xl font-semibold">{{ $thread->title }}</h3>
                     <p class="text-gray-600 text-sm">Posted by {{ $thread->user->name }} on {{ $thread->created_at->format('M d, Y') }}</p>
                     <p class="mt-4">{{ $thread->content }}</p>
                     <div class="mt-4 flex items-center">
@@ -53,31 +49,42 @@
     </div>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            document.querySelectorAll('.react-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const type = this.dataset.type;
-                    const threadId = this.dataset.thread;
+        document.querySelectorAll('.react-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const threadId = this.dataset.thread;
+                const countSpan = this.querySelector(`.${type}-count`);
 
-                    fetch(`/threads/${threadId}/react`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({ type: type })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.querySelector('.upvote-count').textContent = data.counts.upvotes;
-                        document.querySelector('.heart-count').textContent = data.counts.hearts;
-                    });
-                });
+                fetch(`/threads/${threadId}/react`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ type: type })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Check if data.counts has the expected structure
+                    countSpanUpvote = document.querySelector(`.upvote-count`);
+                    countSpanHeart = document.querySelector(`.heart-count`);
+
+                    if (data && data.counts) {
+                        countSpanUpvote.textContent = data.counts.upvotes;
+                        countSpanHeart.textContent = data.counts.hearts;
+                    } else {
+                        console.error('Unexpected response format:', data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             });
         });
-    </script>
-    @endpush
+    });
+</script>
+@endpush
+
 </x-app-layout>
