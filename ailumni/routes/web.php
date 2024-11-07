@@ -52,10 +52,11 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.profile.index');
 Route::get('/alumni/{name}', [AlumniController::class, 'view'])->name('alumni.profile.view');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/threads', [ThreadController::class, 'index'])->name('threads.index');
     Route::get('/threads/{thread}', [ThreadController::class, 'show'])->name('threads.show');
     Route::post('/threads', [ThreadController::class, 'store'])->name('threads.store');
     Route::post('/threads/{thread}/comments', [ThreadController::class, 'storeComment'])->name('threads.comments.store');
     Route::post('/threads/{thread}/react', [ThreadController::class, 'react'])->name('threads.react');
+    
 });

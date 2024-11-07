@@ -30,41 +30,56 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|max:255',
+            'title' => 'nullable|max:255', // Make title optional
             'content' => 'required',
         ]);
-
+    
+        // Set default title as user's name if title is not provided
+        $validated['title'] = $validated['title'] ?? auth()->user()->name;
+    
         $thread = auth()->user()->threads()->create($validated);
-
+    
         return redirect()->route('threads.show', $thread);
     }
 
     public function react(Request $request, Thread $thread)
-    {
-        $type = $request->input('type');
-        $user = auth()->user();
+{
+    $type = $request->input('type');
+    $user = auth()->user();
 
-        $reaction = $thread->reactions()->where('user_id', $user->id)->where('type', $type)->first();
+    // Find the existing reaction by the user for the given type
+    $reaction = $thread->reactions()->where('user_id', $user->id)->where('type', $type)->first();
 
-        if ($reaction) {
-            $reaction->delete();
-            $message = 'Reaction removed';
-        } else {
-            $thread->reactions()->create([
-                'user_id' => $user->id,
-                'type' => $type,
-            ]);
-            $message = 'Reaction added';
-        }
-
-        // Recalculate the counts
-        $counts = [
-            'upvotes' => $thread->reactions()->where('type', 'upvote')->count(),
-            'hearts' => $thread->reactions()->where('type', 'heart')->count(),
-        ];
-
-        return response()->json(['message' => $message, 'counts' => $counts]);
+    // Toggle reaction
+    if ($reaction) {
+        $reaction->delete();
+        $message = 'Reaction removed';
+        $userReacted = false; // User no longer has this reaction
+    } else {
+        $thread->reactions()->create([
+            'user_id' => $user->id,
+            'type' => $type,
+        ]);
+        $message = 'Reaction added';
+        $userReacted = true; // User now has this reaction
     }
+
+    // Recalculate the counts for each reaction type
+    $counts = [
+        'upvotes' => $thread->reactions()->where('type', 'upvote')->count(),
+        'hearts' => $thread->reactions()->where('type', 'heart')->count(),
+    ];
+
+    return response()->json([
+        'message' => $message,
+        'counts' => $counts,
+        'userReacted' => [
+            'upvote' => $thread->reactions()->where('user_id', $user->id)->where('type', 'upvote')->exists(),
+            'heart' => $thread->reactions()->where('user_id', $user->id)->where('type', 'heart')->exists(),
+        ]
+    ]);
+}
+
 
     public function storeComment(Request $request, Thread $thread)
     {
