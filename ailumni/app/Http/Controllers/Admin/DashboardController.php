@@ -34,16 +34,34 @@ class DashboardController extends Controller
     $yearlyRegistrations = $this->getRegistrations('yearly', 5);
 
     // Active Users
-    $dailyActiveUsers = User::where('last_login_at', '>=', now()->subDay())->count();
-    $weeklyActiveUsers = User::where('last_login_at', '>=', now()->subWeek())->count();
-    $monthlyActiveUsers = User::where('last_login_at', '>=', now()->subMonth())->count();
+    $now = Carbon::now();
+
+    $dailyActiveUsers = User::where('last_login_at', '>=', $now->copy()->subDay())->count();
+    $weeklyActiveUsers = User::where('last_login_at', '>=', $now->copy()->subWeek())->count();
+    $monthlyActiveUsers = User::where('last_login_at', '>=', $now->copy()->subMonth())->count();
+
+    $previousDayUsers = User::where('last_login_at', '>=', $now->copy()->subDays(2))
+        ->where('last_login_at', '<', $now->copy()->subDay())
+        ->count();
+    $previousWeekUsers = User::where('last_login_at', '>=', $now->copy()->subWeeks(2))
+        ->where('last_login_at', '<', $now->copy()->subWeek())
+        ->count();
+    $previousMonthUsers = User::where('last_login_at', '>=', $now->copy()->subMonths(2))
+        ->where('last_login_at', '<', $now->copy()->subMonth())
+        ->count();
+
+    $dailyActiveUsersGrowth = $this->calculateGrowth($dailyActiveUsers, $previousDayUsers);
+    $weeklyActiveUsersGrowth = $this->calculateGrowth($weeklyActiveUsers, $previousWeekUsers);
+    $monthlyActiveUsersGrowth = $this->calculateGrowth($monthlyActiveUsers, $previousMonthUsers);
+
 
     return view('dashboard', compact(
         'totalUsers', 'studentsCount', 'alumniCount',
         'newUsersThisMonth', 'newStudentsThisMonth', 'employmentRate',
         'employmentData',
         'dailyRegistrations', 'monthlyRegistrations', 'yearlyRegistrations',
-        'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers'
+        'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers',
+        'dailyActiveUsersGrowth','weeklyActiveUsersGrowth','monthlyActiveUsersGrowth',
     ));
 }
 
@@ -104,4 +122,12 @@ private function getRegistrations($period, $limit)
         'data' => $data
     ];
 }
+
+private function calculateGrowth(int $current, int $previous): float
+    {
+        if ($previous > 0) {
+            return round((($current - $previous) / $previous) * 100, 2);
+        }
+        return $current > 0 ? 100 : 0;
+    }
 }
