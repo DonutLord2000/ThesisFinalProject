@@ -12,56 +12,96 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = User::count();
-        $studentsCount = User::where('role', 'student')->count();
-        $alumniCount = User::where('role', 'alumni')->count();
+    $totalUsers = User::count();
+    $studentsCount = User::where('role', 'student')->count();
+    $alumniCount = User::where('role', 'alumni')->count();
 
-        $newUsersThisMonth = User::whereMonth('created_at', now()->month)->count();
-        $newStudentsThisMonth = User::where('role', 'student')->whereMonth('created_at', now()->month)->count();
+    $newUsersThisMonth = User::whereMonth('created_at', now()->month)->count();
+    $newStudentsThisMonth = User::where('role', 'student')->whereMonth('created_at', now()->month)->count();
 
-        // Calculate employment rate using the is_employed field
-        $employedAlumni = User::where('role', 'alumni')->where('is_employed', 'yes')->count();
-        $employmentRate = $alumniCount > 0 ? round(($employedAlumni / $alumniCount) * 100) : 0;
+    // Employment Data for Pie Chart
+    $employedCount = User::where('role', 'alumni')->where('is_employed', 'yes')->count();
+    $unemployedCount = User::where('role', 'alumni')->where('is_employed', 'no')->count();
+    $unknownCount = User::where('role', 'alumni')->where('is_employed', 'unknown')->count();
+    $employmentData = [$employedCount, $unemployedCount, $unknownCount];
 
-        // Prepare data for monthly registrations chart
-        $monthlyLabels = [];
-        $monthlyData = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $monthlyLabels[] = $date->format('M');
-            $monthlyData[] = User::whereYear('created_at', $date->year)
-                                ->whereMonth('created_at', $date->month)
-                                ->count();
-        }
+    // Calculate overall employment rate
+    $employmentRate = $alumniCount > 0 ? round(($employedCount / $alumniCount) * 100) : 0;
 
-        // Prepare data for alumni employment chart
-        $employmentLabels = [now()->subYear()->year, now()->year, now()->addYear()->year];
-        $employmentData = [];
-        foreach ($employmentLabels as $year) {
-            $totalAlumni = User::where('role', 'alumni')
-                            ->whereYear('created_at', '<=', $year)
-                            ->count();
-            $employedAlumni = User::where('role', 'alumni')
-                                ->where('is_employed', 'yes')
-                                ->whereYear('created_at', '<=', $year)
-                                ->count();
-            $employmentRate = $totalAlumni > 0 ? round(($employedAlumni / $totalAlumni) * 100) : 0;
-            $employmentData[] = $employmentRate;
-        }
-        \Log::debug('Monthly Data:', ['labels' => $monthlyLabels, 'data' => $monthlyData]);
-        \Log::debug('Employment Data:', ['labels' => $employmentLabels, 'data' => $employmentData]);
+    // User Registrations Data
+    $dailyRegistrations = $this->getRegistrations('daily', 30);
+    $monthlyRegistrations = $this->getRegistrations('monthly', 12);
+    $yearlyRegistrations = $this->getRegistrations('yearly', 5);
 
-        // Calculate active users (this is a simplified version, you might want to adjust based on your definition of "active")
-        $dailyActiveUsers = User::where('last_login_at', '>=', Carbon::now()->subDay())->count();
-        $weeklyActiveUsers = User::where('last_login_at', '>=', Carbon::now()->subWeek())->count();
-        $monthlyActiveUsers = User::where('last_login_at', '>=', Carbon::now()->subMonth())->count();
+    // Active Users
+    $dailyActiveUsers = User::where('last_login_at', '>=', now()->subDay())->count();
+    $weeklyActiveUsers = User::where('last_login_at', '>=', now()->subWeek())->count();
+    $monthlyActiveUsers = User::where('last_login_at', '>=', now()->subMonth())->count();
 
-        return view('dashboard', compact(
-            'totalUsers', 'studentsCount', 'alumniCount',
-            'newUsersThisMonth', 'newStudentsThisMonth', 'employmentRate',
-            'monthlyLabels', 'monthlyData',
-            'employmentLabels', 'employmentData',
-            'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers'
-        ));
+    return view('dashboard', compact(
+        'totalUsers', 'studentsCount', 'alumniCount',
+        'newUsersThisMonth', 'newStudentsThisMonth', 'employmentRate',
+        'employmentData',
+        'dailyRegistrations', 'monthlyRegistrations', 'yearlyRegistrations',
+        'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers'
+    ));
+}
+
+private function getRegistrations($period, $limit)
+{
+    switch ($period) {
+        case 'daily':
+            $query = User::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('created_at', '>=', now()->subDays($limit))
+            ->groupBy('date')
+            ->orderBy('date');
+            $format = 'M d';
+            break;
+        case 'monthly':
+            $query = User::select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('created_at', '>=', now()->subMonths($limit))
+            ->groupBy('year', 'month')
+            ->orderBy('year')
+            ->orderBy('month');
+            $format = 'M Y';
+            break;
+        case 'yearly':
+            $query = User::select(
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('created_at', '>=', now()->subYears($limit))
+            ->groupBy('year')
+            ->orderBy('year');
+            $format = 'Y';
+            break;
     }
+
+    $results = $query->get();
+
+    $labels = $results->map(function ($item) use ($format, $period) {
+        switch ($period) {
+            case 'daily':
+                return Carbon::parse($item->date)->format($format);
+            case 'monthly':
+                return Carbon::createFromDate($item->year, $item->month, 1)->format($format);
+            case 'yearly':
+                return $item->year;
+        }
+    })->toArray();
+
+    $data = $results->pluck('count')->toArray();
+
+    return [
+        'labels' => $labels,
+        'data' => $data
+    ];
+}
 }
