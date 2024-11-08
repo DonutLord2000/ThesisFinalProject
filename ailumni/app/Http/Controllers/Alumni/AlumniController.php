@@ -9,42 +9,45 @@ use App\Http\Controllers\Controller;
 class AlumniController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->input('search');
+    {
+        $search = $request->input('search');
 
-    // Set default sort column and direction
-    $sortColumn = $request->get('sort', 'name'); // Default to sorting by name
-    $sortDirection = $request->get('direction', 'asc'); // Default to ascending order
+        // Set default sort column and direction
+        $sortColumn = $request->get('sort', 'name'); // Default to sorting by name
+        $sortDirection = $request->get('direction', 'asc'); // Default to ascending order
 
-    // Validate sort column and direction
-    $allowedSorts = ['name', 'email'];
-    if (!in_array($sortColumn, $allowedSorts) || !in_array($sortDirection, ['asc', 'desc'])) {
-        $sortColumn = 'name';
-        $sortDirection = 'asc';
+        // Validate sort column and direction
+        $allowedSorts = ['name', 'email'];
+        if (!in_array($sortColumn, $allowedSorts) || !in_array($sortDirection, ['asc', 'desc'])) {
+            $sortColumn = 'name';
+            $sortDirection = 'asc';
+        }
+
+        // Retrieve only users with the role 'alumni'
+        $query = User::alumni()
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('contact_info', 'like', "%{$search}%")
+                      ->orWhere('jobs', 'like', "%{$search}%")
+                      ->orWhere('achievements', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy($sortColumn, $sortDirection);
+
+        // Paginate the results
+        $alumni = $query->paginate(20);
+
+        // Check if the request is an AJAX request
+        if ($request->ajax()) {
+            return view('alumni.partials.table_rows', compact('alumni'));
+        }
+
+        // For the initial page load, return the full view
+        return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection'));
     }
 
-    // Retrieve only users with the role 'alumni'
-    $alumni = User::alumni()
-        ->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('contact_info', 'like', "%{$search}%")
-                  ->orWhere('jobs', 'like', "%{$search}%")
-                  ->orWhere('achievements', 'like', "%{$search}%");
-            });
-        })
-        ->orderBy($sortColumn, $sortDirection)
-        ->paginate(10);
-
-    // Check if the request is an AJAX request
-    if ($request->ajax()) {
-        return view('alumni.partials.table_rows', compact('alumni'));
-    }
-
-    // For non-AJAX requests, return the full view
-    return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection', 'search'));
-}
 
     public function view($name)
     {
