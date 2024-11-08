@@ -174,6 +174,7 @@
 
     @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // User Registrations Chart
@@ -256,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize with monthly data
-    updateRegistrationsChart('daily');
+    updateRegistrationsChart('monthly');
 
     // Event listeners for period buttons
     document.getElementById('dailyBtn').addEventListener('click', () => updateRegistrationsChart('daily'));
@@ -281,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'rgb(239, 68, 68)',
                     'rgb(107, 114, 128)'
                 ],
-                borderWidth: 2
+                borderWidth: 1
             }]
         },
         options: {
@@ -306,10 +307,22 @@ document.addEventListener('DOMContentLoaded', function() {
                             return `${context.label}: ${percentage}% (${value})`;
                         }
                     }
+                },
+                datalabels: {
+                    color: '#000',
+                    font: {
+                        weight: 'bold'
+                    },
+                    formatter: function(value, context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${percentage}%`;
+                    }
                 }
             }
-        }
-    });
+        },
+        plugins: [ChartDataLabels]  // Enable the datalabels plugin
+        });
 });
 </script>
 @endpush
