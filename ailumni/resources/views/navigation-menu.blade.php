@@ -17,6 +17,13 @@
                     </x-nav-link>
                 </div>
 
+                <!-- Discussion Area -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('threads.index') }}" :active="request()->routeIs('threads.index')">
+                        {{ __('Discussion') }}
+                    </x-nav-link>
+                </div>
+                
                 <!-- Alumni List -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('alumni.profile.index') }}" :active="request()->routeIs('alumni.profile.index')">
@@ -24,12 +31,6 @@
                     </x-nav-link>
                 </div>
 
-                <!-- Alumni List -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('threads.index') }}" :active="request()->routeIs('threads.index')">
-                        {{ __('Discussion') }}
-                    </x-nav-link>
-                </div>
                 
                 @if (auth()->user()->role == 'admin')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">

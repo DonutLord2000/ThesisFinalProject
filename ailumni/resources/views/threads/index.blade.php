@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="py-12 mx-auto max-w-3xl">
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6 mx-auto" style="width: 70rem">
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6 mx-auto" style="width: 60rem">
             <h3 class="text-lg font-semibold mb-4">Create a new post</h3>
             <form action="{{ route('threads.store') }}" method="POST">
                 @csrf
@@ -22,7 +22,7 @@
 
         <div class="space-y-6">
             @foreach ($threads as $thread)
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mx-auto" x-data="{ isCommentsOpen: false }" style="width: 70rem">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mx-auto" x-data="{ isCommentsOpen: false }" style="width: 60rem">
                     <div class="p-6">
                         <div class="flex items-start space-x-3">
                             <img src="{{ $thread->user->profile_photo_url }}" alt="{{ $thread->user->name }}" class="w-10 h-10 rounded-full">
@@ -85,7 +85,7 @@
                             <span>{{ $thread->comments_count }} comments</span>
                         </button>
                     </div>
-                    <div x-show="isCommentsOpen" class="px-6 py-4 bg-gray-200">
+                    <div x-show="isCommentsOpen" class="px-6 py-4 bg-gray-100">
                         @foreach ($thread->comments as $comment)
                             <div class="flex items-start space-x-3 mb-4">
                                 <img src="{{ $comment->user->profile_photo_url }}" alt="{{ $comment->user->name }}" class="w-8 h-8 rounded-full">
@@ -94,9 +94,6 @@
                                         {{ $comment->user->name }}
                                         @php
                                             $bgColor = match($comment->user->role) {
-                                                'alumni' => 'inline-block px-2 py-1 bg-green-500 text-green-800 rounded',
-                                                'admin' => 'text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded',
-                                                'student' => 'inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded',
                                                 default => 'bg-gray-200 text-gray-700',
                                             };
                                         @endphp
@@ -138,26 +135,25 @@
     document.addEventListener('DOMContentLoaded', function() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        // Check for initial reaction state
+        function updateButtonState(button, isReacted) {
+            const type = button.dataset.type;
+            const icon = button.querySelector(type === 'upvote' ? '.upvote-icon' : '.heart-icon');
+            
+            if (isReacted) {
+                icon.style.color = type === 'upvote' ? "blue" : "red";
+            } else {
+                icon.style.color = "gray";
+            }
+        }
+
         document.querySelectorAll('.react-btn').forEach(button => {
             const type = button.dataset.type;
             const threadId = button.dataset.thread;
             const upvoteCount = document.querySelector(`.upvote-count-${threadId}`);
             const heartCount = document.querySelector(`.heart-count-${threadId}`);
-            const upvoteIcon = button.querySelector('.upvote-icon');
-            const heartIcon = button.querySelector('.heart-icon');
 
-            // Check if the user already reacted
-            if (button.dataset.reacted === 'true') {
-                if (type === 'upvote') {
-                    upvoteIcon.style.color = "blue";
-                }
-            }
-            if (button.dataset.reacted === 'true') {
-                 if (type === 'heart') {
-                    heartIcon.style.color = "red";
-                }
-            }
+            // Set initial state
+            updateButtonState(button, button.dataset.reacted === 'true');
 
             // Add click event listener
             button.addEventListener('click', function() {
@@ -175,18 +171,11 @@
                         upvoteCount.textContent = data.counts.upvotes;
                         heartCount.textContent = data.counts.hearts;
 
-                        // Toggle icon colors based on reaction state
-                        if (data.userReacted.upvote) {
-                            upvoteIcon.style.color = "blue";
-                        } else {
-                            upvoteIcon.style.color = "gray";
-                        }
-
-                        if (data.userReacted.heart) {
-                            heartIcon.style.color = "red";
-                        } else {
-                            heartIcon.style.color = "gray";
-                        }
+                        // Update button states
+                        document.querySelectorAll(`.react-btn[data-thread="${threadId}"]`).forEach(btn => {
+                            const btnType = btn.dataset.type;
+                            updateButtonState(btn, data.userReacted[btnType]);
+                        });
                     } else {
                         console.error('Unexpected response format:', data);
                     }

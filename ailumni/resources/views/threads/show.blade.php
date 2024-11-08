@@ -1,9 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Thread Details') }}
-        </h2>
-    </x-slot>
+    
 
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
@@ -104,41 +100,73 @@
     </div>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            document.querySelectorAll('.react-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const type = this.dataset.type;
-                    const threadId = this.dataset.thread;
-                    const countSpan = this.querySelector(`.${type}-count`);
+        function updateButtonState(button, isReacted) {
+            const type = button.dataset.type;
+            const icon = button.querySelector('svg');
+            
+            if (isReacted) {
+                icon.style.color = type === 'upvote' ? "blue" : "red";
+            } else {
+                icon.style.color = "gray";
+            }
+        }
 
-                    fetch(`/threads/${threadId}/react`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({ type: type })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.counts) {
-                            document.querySelector('.upvote-count').textContent = data.counts.upvotes;
-                            document.querySelector('.heart-count').textContent = data.counts.hearts;
-                            
-                            // Add a subtle animation
-                            countSpan.classList.add('scale-125');
-                            setTimeout(() => countSpan.classList.remove('scale-125'), 200);
-                        } else {
-                            console.error('Unexpected response format:', data);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
-                });
+        document.querySelectorAll('.react-btn').forEach(button => {
+            const type = button.dataset.type;
+            const threadId = button.dataset.thread;
+            const countSpan = button.querySelector(`.${type}-count`);
+
+            // Set initial state
+            fetch(`/threads/${threadId}/reaction-status`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateButtonState(button, data[type]);
+            })
+            .catch(error => console.error('Error:', error));
+
+            // Add click event listener
+            button.addEventListener('click', function() {
+                fetch(`/threads/${threadId}/react`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ type: type })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.counts) {
+                        document.querySelector('.upvote-count').textContent = data.counts.upvotes;
+                        document.querySelector('.heart-count').textContent = data.counts.hearts;
+
+                        // Update button states
+                        document.querySelectorAll('.react-btn').forEach(btn => {
+                            const btnType = btn.dataset.type;
+                            updateButtonState(btn, data.userReacted[btnType]);
+                        });
+
+                        // Add a subtle animation
+                        countSpan.classList.add('scale-125');
+                        setTimeout(() => countSpan.classList.remove('scale-125'), 200);
+                    } else {
+                        console.error('Unexpected response format:', data);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             });
         });
-    </script>
-    @endpush
+    });
+</script>
+@endpush
 </x-app-layout>

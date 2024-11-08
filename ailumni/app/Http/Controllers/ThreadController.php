@@ -94,4 +94,13 @@ class ThreadController extends Controller
 
         return back();
     }
+
+    public function getReactionStatus(Thread $thread)
+{
+    $user = auth()->user();
+    return response()->json([
+        'upvote' => $thread->reactions()->where('user_id', $user->id)->where('type', 'upvote')->exists(),
+        'heart' => $thread->reactions()->where('user_id', $user->id)->where('type', 'heart')->exists(),
+    ]);
+}
 }
