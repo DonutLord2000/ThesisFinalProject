@@ -1,7 +1,7 @@
 @foreach ($alumni as $alum)
     <tr>
         <td class="px-6 py-4 text-sm text-gray-900">
-            <div class="">
+            <div class="flex items-center">
                 <img src="{{ $alum->profile_photo_url }}" alt="Profile Photo" class="w-10 h-10 rounded-full mr-4">
                 <span>{{ $alum->name }}</span>
             </div>
@@ -24,7 +24,9 @@
             </div>
         </td>
         <td class="px-6 py-4 text-sm font-medium">
-            <a href="{{ route('alumni.profile.view', $alum->name) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">View</a>
+            @if(auth()->user() && in_array(auth()->user()->role, ['student', 'alumni', 'admin']))
+                <a href="{{ route('alumni.profile.view', $alum->name) }}" class="text-indigo-600 hover:text-indigo-900 mb-2 mr-2">View</a>
+            @endif
         </td>
     </tr>
 @endforeach
