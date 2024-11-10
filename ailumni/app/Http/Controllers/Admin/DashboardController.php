@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\NewsPost;
 
 class DashboardController extends Controller
 {
@@ -55,6 +56,15 @@ class DashboardController extends Controller
     $monthlyActiveUsersGrowth = $this->calculateGrowth($monthlyActiveUsers, $previousMonthUsers);
 
 
+    $newsPosts = NewsPost::where(function($query) {
+        $query->where('visible_to', 'everyone')
+              ->orWhere('visible_to', auth()->user()->role);
+    })
+    ->orderBy('created_at', 'desc')
+    ->take(10) // Limit numbers to most recent posts, adjust as needed
+    ->get();
+
+
     return view('dashboard', compact(
         'totalUsers', 'studentsCount', 'alumniCount',
         'newUsersThisMonth', 'newStudentsThisMonth', 'employmentRate',
@@ -62,6 +72,7 @@ class DashboardController extends Controller
         'dailyRegistrations', 'monthlyRegistrations', 'yearlyRegistrations',
         'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers',
         'dailyActiveUsersGrowth','weeklyActiveUsersGrowth','monthlyActiveUsersGrowth',
+        'newsPosts',
     ));
 }
 

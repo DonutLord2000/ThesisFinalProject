@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
+use App\Http\Controllers\NewsPostController;
 
 
 /*
@@ -33,6 +34,13 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::group(['middleware' => 'admin'], function () {
+        Route::get('/news', [NewsPostController::class, 'index'])->name('news.index');
+        Route::get('/news/create', [NewsPostController::class, 'create'])->name('news.create');
+        Route::post('/news', [NewsPostController::class, 'store'])->name('news.store');
+        Route::delete('/news/{post}', [NewsPostController::class, 'destroy'])->name('news.destroy');
+    });
 });
 
 route::get('/home', [IndexController::class,'index']);

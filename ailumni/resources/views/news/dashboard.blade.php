@@ -1,0 +1,61 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('News Management') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
+                    <x-button-link href="{{ route('news.create') }}" class="mb-4">
+                        {{ __('Create New Post') }}
+                    </x-button-link>
+
+                    @foreach ($posts as $post)
+                        <div class="mb-8 relative border-l-4 border-l-gray-500 bg-white shadow-md rounded-lg overflow-hidden">
+                            <div class="absolute left-4 top-4 text-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="bg-gray-200 text-black py-2 px-4 flex items-center justify-between">
+                                <h2 class="ml-2 font-semibold">{{ $post->title }}</h2>
+                                <form action="{{ route('news.destroy', $post) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="hover:text-gray-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="p-4 pl-12 whitespace-pre-wrap">
+                                <div class="prose prose-sm max-w-none">
+                                    @if($post->image)
+                                        <img src="{{ Storage::url($post->image) }}" alt="News post image" class="w-2 h-auto mb-4 rounded-lg">
+                                    @endif
+                                    @if($post->video)
+                                        <video controls class="w-2 h-auto mb-4 rounded-lg">
+                                            <source src="{{ Storage::url($post->video) }}" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    @endif
+                                    <div class="prose prose-sm max-w-none ml-4 mb-2 mt-2 mr-4">
+                                        {!! nl2br(e($post->content)) !!}
+                                    </div>
+                                </div>
+                                @if($post->source)
+                                    <div class="px-4 py-2 text-sm text-black-600 border-t">
+                                        This is a message from <strong>{{ $post->source }}</strong>
+                                    </div>
+                                @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

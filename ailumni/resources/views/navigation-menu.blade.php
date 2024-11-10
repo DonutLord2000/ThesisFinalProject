@@ -37,6 +37,12 @@
                         {{ __('User Management') }}
                     </x-nav-link>
                 @endif
+
+                @if (auth()->user()->role == 'admin')
+                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">
+                        {{ __('News Management') }}
+                    </x-nav-link>
+                @endif
                 
                 @if (auth()->user()->role == 'student')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
