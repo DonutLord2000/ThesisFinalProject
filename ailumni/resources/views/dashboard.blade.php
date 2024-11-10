@@ -183,7 +183,7 @@
                         </div>
                         <div class="p-4 pl-12">
                             @if($post->image)
-                                <img src="{{ Storage::url($post->image) }}" alt="News post image" class="w-full h-auto mb-4 rounded-lg">
+                                    <img src="{{ Storage::url($post->image) }}" alt="News post image" class="ml-4 mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">
                             @endif
                             @if($post->video)
                                 <video controls class="w-full h-auto mb-4 rounded-lg">

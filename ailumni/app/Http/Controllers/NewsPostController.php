@@ -31,7 +31,7 @@ class NewsPostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'visible_to' => 'required|in:students,alumni,everyone',
-            'source' => 'nullable|string|max:255',
+            'source' => 'required|string|max:255',
             'image' => 'nullable|image|max:2048',
             'video' => 'nullable|mimetypes:video/avi,video/mpeg,video/quicktime,video/mp4|max:20480',
         ]);
