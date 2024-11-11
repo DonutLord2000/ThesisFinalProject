@@ -81,7 +81,7 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Daily Active Users -->
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="p-2 bg-blue-500 rounded-lg">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
                         </div>
                 
                         <!-- Weekly Active Users -->
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="p-2 bg-purple-500 rounded-lg">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@
                         </div>
                 
                         <!-- Monthly Active Users -->
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
                             <div class="flex items-center justify-between mb-4">
                                 <div class="p-2 bg-green-500 rounded-lg">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

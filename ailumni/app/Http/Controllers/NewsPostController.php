@@ -11,9 +11,14 @@ class NewsPostController extends Controller
     public function index()
     {
         $posts = NewsPost::where(function($query) {
-            $query->where('visible_to', 'everyone')
-                  ->orWhere('visible_to', auth()->user()->role);
-        })
+            if (auth()->user()->role === 'admin') {
+                // Admin can see all posts
+                $query->whereNotNull('id');
+            } else {
+                // Other roles see posts visible to everyone or their specific role
+                $query->where('visible_to', 'everyone')
+                      ->orWhere('visible_to', auth()->user()->role);
+            }})
         ->orderBy('created_at', 'desc')
         ->get();
         

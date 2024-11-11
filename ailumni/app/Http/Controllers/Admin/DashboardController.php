@@ -57,9 +57,14 @@ class DashboardController extends Controller
 
 
     $newsPosts = NewsPost::where(function($query) {
-        $query->where('visible_to', 'everyone')
-              ->orWhere('visible_to', auth()->user()->role);
-    })
+        if (auth()->user()->role === 'admin') {
+            // Admin can see all posts
+            $query->whereNotNull('id');
+        } else {
+            // Other roles see posts visible to everyone or their specific role
+            $query->where('visible_to', 'everyone')
+                  ->orWhere('visible_to', auth()->user()->role);
+        }})
     ->orderBy('created_at', 'desc')
     ->take(10) // Limit numbers to most recent posts, adjust as needed
     ->get();
