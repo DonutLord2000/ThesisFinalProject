@@ -42,5 +42,6 @@
         @stack('scripts')
 
         @livewireScripts
+        <x-chatbot />
     </body>
 </html>

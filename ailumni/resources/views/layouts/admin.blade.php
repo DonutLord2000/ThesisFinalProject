@@ -33,5 +33,6 @@
         @stack('modals')
 
         @livewireScripts
+        <x-chatbot />
     </body>
 </html>

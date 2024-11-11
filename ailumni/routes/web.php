@@ -9,7 +9,7 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\NewsPostController;
-
+use App\Http\Controllers\ChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,5 +67,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/threads', [ThreadController::class, 'store'])->name('threads.store');
     Route::post('/threads/{thread}/comments', [ThreadController::class, 'storeComment'])->name('threads.comments.store');
     Route::post('/threads/{thread}/react', [ThreadController::class, 'react'])->name('threads.react');
-    
 });
+
+Route::post('/chatbot', [ChatbotController::class, 'chat'])->middleware(['auth:sanctum']);
