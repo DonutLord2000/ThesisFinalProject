@@ -13,8 +13,8 @@
                         {{ __('Create New Post') }}
                     </x-button-link>
                     @foreach ($posts as $post)
-                        <div class="mb-8 relative border-l-4 border-l-blue-600 bg-white shadow-md rounded-lg overflow-hidden">
-                            <div class="absolute left-4 top-4 text-blue-600">
+                    <div class="mb-8 relative border-l-4 border-l-gray-600 bg-white shadow-md rounded-lg overflow-hidden mx-auto">
+                        <div class="absolute left-2 top-2 text-black-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                                 </svg>
@@ -33,7 +33,7 @@
                             </div>
                             <div class="p-4 pl-12">
                                 @if($post->image)
-                                    <img src="{{ Storage::url($post->image) }}" alt="News post image" class="ml-4 mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">
+                                    <img src="{{ Storage::url($post->image) }}" alt="News post image" class="mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">
                                 @endif
                                 @if($post->video)
                                     <video controls class="w-full h-auto mb-4 rounded-lg">
@@ -41,7 +41,7 @@
                                         Your browser does not support the video tag.
                                     </video>
                                 @endif
-                                <div class="prose prose-sm max-w-none ml-4 mb-2 mt-2 mr-4">
+                                <div class="prose prose-sm max-w-none mb-2 mt-2 mr-4">
                                     {!! nl2br(e($post->content)) !!}
                                 </div>
                             </div>

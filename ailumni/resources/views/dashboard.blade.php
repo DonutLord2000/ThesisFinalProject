@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-blue-100 p-6 rounded-lg shadow-md flex items-center justify-between h-40">
-                        <div class="text-blue-600">
+                        <div class="text-black-600">
                             <svg class="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 12c2.28 0 4-1.72 4-4s-1.72-4-4-4-4 1.72-4 4 1.72 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
                             </svg>
@@ -56,7 +56,7 @@
                         <h3 class="text-lg font-semibold mb-4">User Registrations</h3>
                         <div class="mb-4 flex space-x-2">
                             <button id="dailyBtn" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500">Daily</button>
-                            <button id="monthlyBtn" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">Monthly</button>
+                            <button id="monthlyBtn" class="px-4 py-2 bg-blue-100 text-white rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500">Monthly</button>
                             <button id="yearlyBtn" class="px-4 py-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500">Yearly</button>
                         </div>
                         <div style="height: 300px;">
@@ -169,11 +169,13 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- NEws post -->
             <div class="mt-8">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-4">Latest News</h2>
                 @foreach ($newsPosts as $post)
-                    <div class="mb-8 relative border-l-4 border-l-blue-600 bg-white shadow-md rounded-lg overflow-hidden">
-                        <div class="absolute left-4 top-4 text-blue-600">
+                    <div class="mb-8 relative border-l-4 border-l-gray-600 bg-white shadow-md rounded-lg overflow-hidden mx-auto" style="width: 70rem">
+                        <div class="absolute left-2 top-2 text-black-600">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                             </svg>
@@ -183,7 +185,7 @@
                         </div>
                         <div class="p-4 pl-12">
                             @if($post->image)
-                                    <img src="{{ Storage::url($post->image) }}" alt="News post image" class="ml-4 mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">
+                                    <img src="{{ Storage::url($post->image) }}" alt="News post image" class="mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">
                             @endif
                             @if($post->video)
                                 <video controls class="w-full h-auto mb-4 rounded-lg">
@@ -191,7 +193,7 @@
                                     Your browser does not support the video tag.
                                 </video>
                             @endif
-                            <div class="prose prose-sm max-w-none ml-4 mb-2 mt-2 mr-4">
+                            <div class="prose prose-sm max-w-none mb-2 mt-2 mr-4">
                                 {!! nl2br(e($post->content)) !!}
                             </div>
                         </div>
