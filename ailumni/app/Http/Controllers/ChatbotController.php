@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use OpenAI\Laravel\Facades\OpenAI;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ChatbotController extends Controller
 {
@@ -14,10 +16,21 @@ class ChatbotController extends Controller
         ]);
 
         try {
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            // User information for the system role
+            $userInfo = [
+                'name' => $user->name,
+                'email' => $user->email,
+            ];
+
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-3.5-turbo',
                 'messages' => [
-                    ['role' => 'system', 'content' => 'You are a helpful assistant.'],
+                    ['role' => 'system', 'content' => 'You are AI-Lumni, a helpful assistant. You have access to the following alumni information:'. json_encode($userInfo)],
                     ['role' => 'user', 'content' => $request->input('message')],
                 ],
             ]);
