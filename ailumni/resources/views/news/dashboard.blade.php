@@ -13,14 +13,14 @@
                         {{ __('Create New Post') }}
                     </x-button-link>
                     @foreach ($posts as $post)
-                    <div class="mb-8 relative border-l-4 border-l-gray-600 bg-white shadow-md rounded-lg overflow-hidden mx-auto">
-                        <div class="absolute left-2 top-2 text-black-600">
+                    <div class="mb-8 relative border-l-4 border-l-gray-200 bg-white shadow-md rounded-lg overflow-hidden mx-auto">
+                        <div class="absolute left-1 top-1 text-black-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 " viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                                 </svg>
                             </div>
                             <div class="bg-gray-200 text-black py-2 px-4 flex items-center justify-between">
-                                <h2 class="ml-2 font-semibold">{{ $post->title }}</h2>
+                                <h2 class="ml-4 font-semibold">{{ $post->title }}</h2>
                                 <form action="{{ route('news.destroy', $post) }}" method="POST" class="inline" onsubmit="return confirmDeletion()">
                                     @csrf
                                     @method('DELETE')

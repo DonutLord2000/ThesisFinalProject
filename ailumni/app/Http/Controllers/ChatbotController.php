@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ChatbotController extends Controller
 {
@@ -24,7 +25,9 @@ class ChatbotController extends Controller
             // User information for the system role
             $userInfo = [
                 'name' => $user->name,
-                'email' => $user->email,
+                'bio' => $user->bio ?? 'No bio provided.',
+                'jobs' => $user->jobs ?? 'No jobs listed.',
+                'achievements' => $user->achievements ?? 'No achievements provided.',
             ];
 
             $result = OpenAI::chat()->create([
@@ -33,15 +36,20 @@ class ChatbotController extends Controller
                     ['role' => 'system', 'content' => 'You are AI-Lumni, a helpful assistant. You have access to the following alumni information:'. json_encode($userInfo)],
                     ['role' => 'user', 'content' => $request->input('message')],
                 ],
+                'max_tokens' => 750, // Limit to approximately 500 words
             ]);
 
             $reply = $result['choices'][0]['message']['content'] ?? 'Sorry, I could not generate a response.';
+            $wordArray = explode(' ', $reply);
+            if (count($wordArray) > 500) {
+                $reply = implode(' ', array_slice($wordArray, 0, 500)) . '...';
+            }
         } catch (\Exception $e) {
-            $reply = 'Error: ' . $e->getMessage();
+            $reply = 'An error occurred while processing your request.' . $e->getMessage();
         }
 
         return response()->json([
-            'reply' => $reply,
+            'reply' => $reply, 200
         ]);
     }
 }

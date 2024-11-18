@@ -80,4 +80,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $query->where('role', 'alumni');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

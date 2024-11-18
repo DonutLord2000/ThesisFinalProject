@@ -32,6 +32,7 @@
                 </div>
 
                 
+
                 @if (auth()->user()->role == 'admin')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
                         {{ __('User Management') }}
@@ -55,6 +56,20 @@
                         {{ __('Alumni Profile') }}
                     </x-nav-link>
                 @endif
+
+                <!-- Contact us -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('contact-directory') }}" :active="request()->routeIs('contact-directory')">
+                        {{ __('Contact Us') }}
+                    </x-nav-link>
+                </div>
+
+                <!-- About us -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('about-us') }}" :active="request()->routeIs('about-us')">
+                        {{ __('About Us') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             

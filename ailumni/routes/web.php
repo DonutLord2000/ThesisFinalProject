@@ -72,3 +72,11 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/chatbot', [ChatbotController::class, 'chat']);
 });
+
+Route::get('/contact-directory', function () {
+    return view('contact-directory');
+})->name('contact-directory');
+
+Route::get('/about-us', function () {
+    return view('about-us');
+})->name('about-us');

@@ -4,9 +4,9 @@
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->email }}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
             @if($user->role == 'student')
-                <span class="inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded">{{ $user->role }}</span>
+                <span class="inline-block px-2 py-1 bg-blue-500 text-black-800 rounded">{{ $user->role }}</span>
             @elseif($user->role == 'alumni')
-                <span class="inline-block px-2 py-1 bg-green-500 text-green-800 rounded">{{ $user->role }}</span>
+                <span class="inline-block px-2 py-1 bg-green-500 text-black-800 rounded">{{ $user->role }}</span>
             @elseif($user->role == 'admin')
                 <span class="text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded">{{ $user->role }}</span>                                         
             @endif
