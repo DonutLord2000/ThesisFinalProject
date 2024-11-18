@@ -1,8 +1,6 @@
 <x-app-layout>
-    
-
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+        <div class="mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-6 mx-auto" style="width: 70rem">
                 <div class="p-6">
                     <div class="flex items-start space-x-3">

@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 mx-auto max-w-3xl">
+    <div class="py-12 mx-auto">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 mb-6 mx-auto" style="width: 60rem">
             <h3 class="text-lg font-semibold mb-4">Create a new post</h3>
             <form action="{{ route('threads.store') }}" method="POST">
