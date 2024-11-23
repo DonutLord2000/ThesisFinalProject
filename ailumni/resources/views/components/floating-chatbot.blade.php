@@ -4,49 +4,142 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
     </button>
-    <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-80 h-96 absolute bottom-16 right-0">
+    <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-96 h-96 fixed bottom-16 right-0 transition-all duration-500 ease-in-out flex flex-col">
         <div class="flex justify-between items-center p-4 border-b">
-            <h3 class="text-lg font-semibold">Chat Support</h3>
-            <button id="close-chat" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" aria-label="Close chat">
+            <h3 class="text-lg font-semibold">AI-Lumni</h3>
+            <button id="fullscreen-chat" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" aria-label="Fullscreen chat">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6v6h6M20 18v-6h-6M4 18l6-6M20 6l-6 6" />
                 </svg>
             </button>
         </div>
-        <div id="chat-messages" class="h-64 overflow-y-auto p-4 space-y-4"></div>
-        <form id="chat-form" class="p-4 border-t">
-            <div class="flex space-x-2">
-                <input type="text" id="user-input" class="flex-grow rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Type your message..." required>
-                <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Send</button>
-            </div>
+        <div id="chat-messages" class="flex-grow overflow-y-auto p-4 space-y-4 bg-gray-300"></div>
+        <div id="thinking-indicator" class="hidden p-2 text-blue-500 font-bold animate-pulse">AI-Lumni is thinking...</div>
+        <form id="chat-form" class="p-4 border-t flex items-center space-x-2">
+            <input type="text" id="user-input" class="flex-grow rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Type your message..." required>
+            <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Send</button>
         </form>
     </div>
+    <!-- Dark Background Overlay -->
+    <div id="overlay" class="hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-all duration-500 z-40"></div>
 </div>
 
+<style>
+    /* Scaled fullscreen styling */
+    #chat-window.scaled-fullscreen {
+        width: 80vw;
+        height: 80vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: fixed;
+        z-index: 50;
+        border-radius: 1rem;
+    }
+    /* Message container height when scaled up */
+    #chat-messages {
+        flex: 1; /* Expands to fill the available space */
+        overflow-y: auto; /* Enables vertical scrolling for messages */
+        padding: 1rem;
+        background-color: #f9f9f9;
+    }
+
+    /* Form area always sticks to the bottom */
+    #chat-form {
+        border-top: 1px solid #ddd;
+        background-color: white;
+    }
+
+    #user-input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 0.5rem;
+    }
+
+    #chat-form button {
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #chat-form button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Overlay */
+    #overlay {
+        z-index: 40;
+    }
+
+    /* Overlay visible state */
+    #overlay.visible {
+        display: block;
+    }
+
+    /* New style for thinking indicator */
+    #thinking-indicator {
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+</style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const chatIcon = document.getElementById('chat-icon');
     const chatWindow = document.getElementById('chat-window');
-    const closeChat = document.getElementById('close-chat');
     const chatForm = document.getElementById('chat-form');
     const userInput = document.getElementById('user-input');
     const chatMessages = document.getElementById('chat-messages');
+    const overlay = document.getElementById('overlay');
+    const fullscreenChat = document.getElementById('fullscreen-chat');
+    const thinkingIndicator = document.getElementById('thinking-indicator');
 
+    // Open/close chat window
     chatIcon.addEventListener('click', () => {
         chatWindow.classList.toggle('hidden');
     });
 
-    closeChat.addEventListener('click', () => {
-        chatWindow.classList.add('hidden');
-    });
+    // Toggle fullscreen/scaled-up view
+    fullscreenChat.addEventListener('click', toggleFullscreen);
+    overlay.addEventListener('click', toggleFullscreen); // Close fullscreen on overlay click
 
+    function toggleFullscreen() {
+        const isScaled = chatWindow.classList.contains('scaled-fullscreen');
+
+        // Toggle scaled fullscreen state
+        chatWindow.classList.toggle('scaled-fullscreen', !isScaled);
+        overlay.classList.toggle('visible', !isScaled);
+
+        if (!isScaled) {
+            chatWindow.style.width = '65rem';
+            chatWindow.style.height = '75vh';
+        } else {
+            chatWindow.style.width = '';
+            chatWindow.style.height = '';
+        }
+    }
+
+    // Send message
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const message = userInput.value.trim();
         if (!message) return;
 
         addMessage('user', message);
-        userInput.value = '';
+        userInput.value = ''; // Clear input field
+
+        // Show thinking indicator
+        thinkingIndicator.classList.remove('hidden');
 
         try {
             const response = await fetch('/chatbot', {
@@ -63,31 +156,70 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const data = await response.json();
-            addMessage('assistant', data.message);
+            
+            // Hide thinking indicator
+            thinkingIndicator.classList.add('hidden');
+
+            // Use typewriter effect for assistant's message
+            typewriterEffect('assistant', data.message);
         } catch (error) {
             console.error('Error:', error);
+            
+            // Hide thinking indicator
+            thinkingIndicator.classList.add('hidden');
+
             addMessage('assistant', 'Sorry, there was an error processing your request.');
         }
     });
 
+    // Add message to chat window (for user messages)
     function addMessage(role, content) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('mb-4', role === 'user' ? 'text-right' : 'text-left');
-        
-        const innerElement = document.createElement('div');
-        const roleClasses = role === 'user' 
-            ? ['bg-primary', 'text-primary-foreground'] 
-            : ['bg-gray-200', 'text-gray-800'];
-        
-        innerElement.classList.add('inline-block', 'p-2', 'rounded-lg');
-        roleClasses.forEach(cls => innerElement.classList.add(cls)); // Add classes one by one
-        
-        innerElement.textContent = content;
-        
-        messageElement.appendChild(innerElement);
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        if (role === 'user') {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('mb-4', 'text-right');
+
+            const innerElement = document.createElement('div');
+            innerElement.classList.add('inline-block', 'p-2', 'rounded-lg', 'shadow-sm', 'transition', 'duration-300', 'ease-in-out', 'bg-primary', 'text-primary-foreground');
+
+            innerElement.textContent = content;
+
+            messageElement.appendChild(innerElement);
+            chatMessages.appendChild(messageElement);
+
+            chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     }
 
+    // Typewriter effect for assistant messages
+    function typewriterEffect(role, content) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('mb-4', 'text-left');
+
+        const innerElement = document.createElement('div');
+        innerElement.classList.add('inline-block', 'p-2', 'rounded-lg', 'shadow-sm', 'transition', 'duration-300', 'ease-in-out', 'bg-gray-200', 'text-gray-800');
+
+        messageElement.appendChild(innerElement);
+        chatMessages.appendChild(messageElement);
+
+        let i = 0;
+        const speed = 25; // Adjust the speed of typing here (lower is faster)
+
+        function typeWriter() {
+            if (i < content.length) {
+                innerElement.textContent += content.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+            chatMessages.scrollTo({
+                top: chatMessages.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        typeWriter();
+    }
 });
 </script>
