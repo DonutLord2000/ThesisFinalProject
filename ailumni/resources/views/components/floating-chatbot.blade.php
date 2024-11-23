@@ -104,6 +104,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const fullscreenChat = document.getElementById('fullscreen-chat');
     const thinkingIndicator = document.getElementById('thinking-indicator');
 
+    let chatHistory = [];
+
+    // Load chat history from localStorage
+    function loadChatHistory() {
+        const storedHistory = localStorage.getItem('chatHistory');
+        if (storedHistory) {
+            chatHistory = JSON.parse(storedHistory);
+            // Filter messages from the last hour
+            const oneHourAgo = Date.now() - 60 * 60 * 1000;
+            chatHistory = chatHistory.filter(msg => msg.timestamp > oneHourAgo);
+            // Display loaded messages
+            chatHistory.forEach(msg => addMessage(msg.role, msg.content));
+        }
+    }
+
+    // Save chat history to localStorage
+    function saveChatHistory() {
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    }
+
+    // Load chat history on page load
+    loadChatHistory();
+
     // Open/close chat window
     chatIcon.addEventListener('click', () => {
         chatWindow.classList.toggle('hidden');
@@ -148,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({ message, history: chatHistory })
             });
 
             if (!response.ok) {
@@ -172,25 +195,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Add message to chat window (for user messages)
+    // Add message to chat window and history
     function addMessage(role, content) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('mb-4', role === 'user' ? 'text-right' : 'text-left');
+
+        const innerElement = document.createElement('div');
+        innerElement.classList.add('inline-block', 'p-2', 'rounded-lg', 'shadow-sm', 'transition', 'duration-300', 'ease-in-out');
+        
         if (role === 'user') {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('mb-4', 'text-right');
-
-            const innerElement = document.createElement('div');
-            innerElement.classList.add('inline-block', 'p-2', 'rounded-lg', 'shadow-sm', 'transition', 'duration-300', 'ease-in-out', 'bg-primary', 'text-primary-foreground');
-
-            innerElement.textContent = content;
-
-            messageElement.appendChild(innerElement);
-            chatMessages.appendChild(messageElement);
-
-            chatMessages.scrollTo({
-                top: chatMessages.scrollHeight,
-                behavior: 'smooth'
-            });
+            innerElement.classList.add('bg-primary', 'text-primary-foreground');
+        } else {
+            innerElement.classList.add('bg-gray-200', 'text-gray-800');
         }
+
+        innerElement.textContent = content;
+
+        messageElement.appendChild(innerElement);
+        chatMessages.appendChild(messageElement);
+
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+
+        // Add message to history
+        chatHistory.push({ role, content, timestamp: Date.now() });
+        saveChatHistory();
     }
 
     // Typewriter effect for assistant messages
@@ -205,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chatMessages.appendChild(messageElement);
 
         let i = 0;
-        const speed = 25; // Adjust the speed of typing here (lower is faster)
+        const speed = 10; // Adjust the speed of typing here (lower is faster)
 
         function typeWriter() {
             if (i < content.length) {
@@ -220,6 +251,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         typeWriter();
+
+        // Add message to history after typewriter effect is complete
+        setTimeout(() => {
+            chatHistory.push({ role, content, timestamp: Date.now() });
+            saveChatHistory();
+        }, content.length * speed);
     }
 });
 </script>
