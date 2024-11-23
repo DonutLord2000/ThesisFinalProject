@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/threads/{thread}/react', [ThreadController::class, 'react'])->name('threads.react');
 });
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::post('/chatbot', [ChatbotController::class, 'chat']);
 });
 

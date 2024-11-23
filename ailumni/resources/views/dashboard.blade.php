@@ -173,50 +173,6 @@
             </div>
             @endif
 
-            <!-- Chatbot -->
-            <div class="py-12">
-                <div x-data="chatbot()" class="max-w-6xl mx-auto sm:px-6 lg:px-8 bg-white rounded-lg shadow-sm p-6 mb-6">
-                    
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-xl font-semibold text-gray-800">AI-Lumni</h2>
-                        <div class="text-sm text-gray-500">Ask me anything regarding GRC</div>
-                    </div>
-                    
-                    <div x-ref="messageContainer" class="bg-gray-50 rounded-lg p-4 mb-4" style="height: 300px; overflow-y: auto;">
-                        <template x-for="message in messages" :key="message.id">
-                            <div class="mb-4" :class="{'text-right': message.role === 'user', 'text-left': message.role === 'assistant'}">
-                                <span x-text="message.content" 
-                                      :class="{
-                                          'bg-gray-200 text-black-900': message.role === 'user',
-                                          'bg-gray-200 text-black-900': message.role === 'assistant',
-                                          'px-4 py-2 rounded-lg inline-block max-w-[80%]': true
-                                      }">
-                                </span>
-                            </div>
-                        </template>
-                        <div x-show="isLoading" class="flex items-center space-x-2">
-                            <span class="inline-block animate-pulse text-blue-600">AI-Lumni is thinking...</span>
-                        </div>
-                        <div x-show="errorMessage" class="text-red-500 text-sm mt-2" x-text="errorMessage"></div>
-                    </div>
-            
-                    <form @submit.prevent="sendMessage" class="flex space-x-3">
-                        <input 
-                            x-model="userInput" 
-                            type="text" 
-                            placeholder="Type your message..." 
-                            class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                        <button 
-                            type="submit" 
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                            :disabled="isLoading"
-                        >
-                            Send
-                        </button>
-                    </form>
-                </div>
-
             <!-- NEws post -->
             <div class="mt-10">
                 <h2 class="text-2xl font-semibold text-gray-800 mt-4 mb-4 text-center mx-auto">Latest News</h2>
@@ -411,62 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: [ChartDataLabels]  // Enable the datalabels plugin
         });
 });
-
-// Chatbot script   
-
-function chatbot() {
-        return {
-            messages: [],
-            userInput: '',
-            isLoading: false,
-            errorMessage: '',
-            sendMessage() {
-                if (this.userInput.trim() === '') return;
-
-                this.messages.push({ id: Date.now(), role: 'user', content: this.userInput });
-                this.isLoading = true;
-                this.errorMessage = '';
-
-                fetch('/chatbot', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({ message: this.userInput })
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.reply) {
-                            this.messages.push({ id: Date.now(), role: 'assistant', content: data.reply });
-                        } else {
-                            this.errorMessage = 'Unexpected response from the server.';
-                        }
-                        this.isLoading = false;
-                        this.scrollToBottom();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.errorMessage = 'Failed to get a response from the server. Please try again.';
-                        this.isLoading = false;
-                    });
-
-                this.userInput = '';
-                this.scrollToBottom();
-            },
-            scrollToBottom() {
-                this.$nextTick(() => {
-                    const messageContainer = this.$refs.messageContainer;
-                    messageContainer.scrollTop = messageContainer.scrollHeight;
-                });
-            }
-        }
-    }
 </script>
 @endpush
 </x-app-layout>
