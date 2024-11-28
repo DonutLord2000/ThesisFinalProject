@@ -5,7 +5,6 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Alumni\UpdateAlumniProfileInformation;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\NewsPostController;
