@@ -31,6 +31,7 @@
         </div>
 
         @stack('modals')
+        @stack('scripts')
 
         @livewireScripts
         <x-floating-chatbot />

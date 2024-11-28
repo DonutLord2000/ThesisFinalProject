@@ -55,10 +55,6 @@ Route::middleware(['auth', 'alumni'])->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-//Alumni Routing
-Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.profile.index');
-Route::get('/alumni/{name}', [AlumniController::class, 'view'])->name('alumni.profile.view');
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/threads', [ThreadController::class, 'index'])->name('threads.index');
     Route::get('/threads/{thread}', [ThreadController::class, 'show'])->name('threads.show');
@@ -79,3 +75,9 @@ Route::get('/contact-directory', function () {
 Route::get('/about-us', function () {
     return view('about-us');
 })->name('about-us');
+
+Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
+Route::get('/alumni/{alumnus}', [AlumniController::class, 'show'])->name('alumni.show');
+Route::get('/alumni/{alumnus}/edit', [AlumniController::class, 'edit'])->name('alumni.edit');
+Route::put('/alumni/{alumnus}', [AlumniController::class, 'update'])->name('alumni.update');
+Route::delete('/alumni/{alumnus}', [AlumniController::class, 'destroy'])->name('alumni.destroy');

@@ -5,78 +5,59 @@ namespace App\Http\Controllers\Alumni;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
+use App\Models\Alumnus;
 
 class AlumniController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search');
-        $sortColumn = $request->get('sort', 'name');
-        $sortDirection = $request->get('direction', 'asc');
-        $showFullInfo = $request->boolean('showFullInfo', false);
-
-        $allowedSorts = ['name', 'email'];
-        if (!in_array($sortColumn, $allowedSorts) || !in_array($sortDirection, ['asc', 'desc'])) {
-            $sortColumn = 'name';
-            $sortDirection = 'asc';
-        }
-
-        $query = User::alumni()
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->orderBy($sortColumn, $sortDirection);
-
-        $alumni = $query->paginate(20);
-
-        // Mask sensitive information if not showing full info
-        if (!$showFullInfo) {
-            $alumni->getCollection()->transform(function ($alum) {
-                $alum->email = $this->maskString($alum->email);
-                return $alum;
-            });
-        }
-
-        if ($request->ajax()) {
-            return view('alumni.partials.table_rows', compact('alumni', 'showFullInfo'));
-        }
-
-        $userCanViewFullInfo = auth()->user() && in_array(auth()->user()->role, ['student', 'alumni', 'admin']);
-
-        return view('alumni.profile.index', compact('alumni', 'sortColumn', 'sortDirection', 'showFullInfo', 'userCanViewFullInfo'));
+        $alumni = Alumnus::all();
+        return view('alumni.index', compact('alumni'));
     }
 
-    public function view($name)
+    public function show(Alumnus $alumnus)
     {
-        $alumni = User::alumni()->where('name', $name)->firstOrFail();
-        
-        if (!auth()->user() || !in_array(auth()->user()->role, ['student', 'alumni', 'admin'])) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        return view('alumni.profile.view', compact('alumni'));
+        return view('alumni.show', compact('alumnus'));
     }
 
-
-    public function create()
+    public function edit(Alumnus $alumnus)
     {
-        return view('alumni.profile.index');
+        return view('alumni.edit', compact('alumnus'));
     }
 
-    public function store(Request $request)
+    public function update(Request $request, Alumnus $alumnus)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'profile_photo_url' => 'nullable|url'
+            'year_graduated' => 'required|integer',
+            'age' => 'nullable|integer',
+            'gender' => 'nullable|in:Male,Female,Other',
+            'marital_status' => 'nullable|string|max:255',
+            'current_location' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'degree_program' => 'required|string|max:255',
+            'major' => 'nullable|string|max:255',
+            'minor' => 'nullable|string|max:255',
+            'gpa' => 'nullable|numeric|between:0,4.00',
+            'employment_status' => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'nature_of_work' => 'nullable|string|max:255',
+            'employment_sector' => 'nullable|string|max:255',
+            'tenure_status' => 'nullable|string|max:255',
+            'monthly_salary' => 'nullable|numeric',
         ]);
 
-        User::create(array_merge($request->all(), ['role' => 'alumni']));
+        $alumnus->update($validated);
 
-        return redirect()->route('alumni.profile.index')->with('success', 'Alumni added successfully.');
+        return redirect()->route('alumni.show', $alumnus)->with('success', 'Alumnus updated successfully.');
+    }
+
+    public function destroy(Alumnus $alumnus)
+    {
+        $alumnus->delete();
+        return redirect()->route('alumni.index')->with('success', 'Alumnus deleted successfully.');
     }
 }
