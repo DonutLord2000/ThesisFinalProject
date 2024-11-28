@@ -26,10 +26,7 @@ class AlumniController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('contact_info', 'like', "%{$search}%")
-                      ->orWhere('jobs', 'like', "%{$search}%")
-                      ->orWhere('achievements', 'like', "%{$search}%");
+                      ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->orderBy($sortColumn, $sortDirection);
@@ -40,7 +37,6 @@ class AlumniController extends Controller
         if (!$showFullInfo) {
             $alumni->getCollection()->transform(function ($alum) {
                 $alum->email = $this->maskString($alum->email);
-                $alum->contact_info = $this->maskString($alum->contact_info);
                 return $alum;
             });
         }
@@ -65,14 +61,6 @@ class AlumniController extends Controller
         return view('alumni.profile.view', compact('alumni'));
     }
 
-    private function maskString($string)
-    {
-        $length = Str::length($string);
-        if ($length <= 5) {
-            return $string; // Return the original string if it's 5 characters or less
-        }
-        return Str::substr($string, 0, 5) . str_repeat('*', $length - 5);
-    }
 
     public function create()
     {
@@ -84,10 +72,6 @@ class AlumniController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'contact_info' => 'nullable|string|max:255',
-            'jobs' => 'nullable|string',
-            'achievements' => 'nullable|string',
-            'bio' => 'nullable|string',
             'profile_photo_url' => 'nullable|url'
         ]);
 

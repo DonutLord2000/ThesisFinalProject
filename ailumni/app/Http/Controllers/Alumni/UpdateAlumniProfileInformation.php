@@ -42,10 +42,6 @@ class UpdateAlumniProfileInformation extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
-            'contact_info' => ['nullable', 'string', 'max:255'],
-            'jobs' => ['nullable', 'string', 'max:255'],
-            'achievements' => ['nullable', 'string'],
-            'bio' => ['nullable', 'string'],
         ];
 
         // Call the update method from the UpdateUserProfileInformation action
@@ -73,10 +69,6 @@ class UpdateAlumniProfileInformation extends Controller
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
-            'contact_info' => $input['contact_info'] ?? null,
-            'jobs' => $input['jobs'] ?? null,
-            'achievements' => $input['achievements'] ?? '',
-            'bio' => $input['bio'] ?? null,
         ])->save();
 
         $user->sendEmailVerificationNotification();
