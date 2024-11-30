@@ -3,12 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Alumni\UpdateAlumniProfileInformation;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\NewsPostController;
 use App\Http\Controllers\ChatbotController;
+use App\Actions\Fortify\UpdateUserProfileInformation;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,10 +48,6 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin', 'as' => 'a
     Route::resource('users', UserController::class);
 });
 
-
-Route::middleware(['auth', 'alumni'])->group(function () {
-    Route::get('/alumni/profile', [UpdateAlumniProfileInformation::class, 'index'])->name('alumni.profile.show');
-});
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
