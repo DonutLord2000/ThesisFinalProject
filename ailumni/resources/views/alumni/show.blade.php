@@ -47,7 +47,7 @@
                             <p><strong>Nature of Work:</strong> {{ $alumnus->nature_of_work ?? 'N/A' }}</p>
                             <p><strong>Employment Sector:</strong> {{ $alumnus->employment_sector ?? 'N/A' }}</p>
                             <p><strong>Tenure Status:</strong> {{ $alumnus->tenure_status ?? 'N/A' }}</p>
-                            <p><strong>Monthly Salary:</strong> {{ $alumnus->monthly_salary ? '$' . number_format($alumnus->monthly_salary, 2) : 'N/A' }}</p>
+                            <p><strong>Monthly Salary:</strong> {{ $alumnus->monthly_salary ? 'php ' . number_format($alumnus->monthly_salary, 2) : 'N/A' }}</p>
                         </div>
                     </div>
 

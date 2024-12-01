@@ -57,6 +57,7 @@ class AlumniController extends Controller
             'company' => 'Company',
             'nature_of_work' => 'Nature of Work',
             'tenure_status' => 'Tenure Status',
+            'employment_sector' => 'Employment Sector',
             'monthly_salary' => 'Monthly Salary'
         ];
 
@@ -114,5 +115,42 @@ class AlumniController extends Controller
         $alumnus->delete();
         return redirect()->route('alumni.index')->with('success', 'Alumnus deleted successfully.');
     }
+
+    public function create()
+    {
+        return view('alumni.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'year_graduated' => 'required|integer',
+            'age' => 'nullable|integer',
+            'gender' => 'nullable|in:Male,Female,Other',
+            'marital_status' => 'nullable|string|max:255',
+            'current_location' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'degree_program' => 'required|string|max:255',
+            'major' => 'nullable|string|max:255',
+            'minor' => 'nullable|string|max:255',
+            'gpa' => 'nullable|numeric|between:0,4.00',
+            'employment_status' => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'nature_of_work' => 'nullable|string|max:255',
+            'employment_sector' => 'nullable|string|max:255',
+            'tenure_status' => 'nullable|string|max:255',
+            'monthly_salary' => 'nullable|numeric',
+        ]);
+
+        $alumnus = Alumnus::create($validated);
+
+        return redirect()->route('alumni.show', $alumnus)->with('success', 'Alumnus created successfully.');
+    }
+
+
 }
 

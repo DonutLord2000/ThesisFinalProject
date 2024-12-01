@@ -4,7 +4,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <h1 class="text-center text-3xl font-bold mb-8 text-gray-800">Alumni List</h1>
-            
+              
             <div class="mb-6 px-4">
                 <form id="searchForm" action="{{ route('alumni.index') }}" method="GET" class="flex">
                     <input 
@@ -29,7 +29,11 @@
                     @endforeach
                 </div>
             </div>
-                        
+            <div class="mb-4">
+                <a href="{{ route('alumni.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Add New Alumnus
+                </a>
+            </div>  
             <div class="flex flex-col">
                 <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">

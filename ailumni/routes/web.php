@@ -72,8 +72,12 @@ Route::get('/about-us', function () {
     return view('about-us');
 })->name('about-us');
 
-Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
-Route::get('/alumni/{alumnus}', [AlumniController::class, 'show'])->name('alumni.show');
-Route::get('/alumni/{alumnus}/edit', [AlumniController::class, 'edit'])->name('alumni.edit');
-Route::put('/alumni/{alumnus}', [AlumniController::class, 'update'])->name('alumni.update');
-Route::delete('/alumni/{alumnus}', [AlumniController::class, 'destroy'])->name('alumni.destroy');
+Route::group(['middleware' => 'admin'], function () {
+    Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
+    Route::get('/alumni/create', [AlumniController::class, 'create'])->name('alumni.create');
+    Route::post('/alumni', [AlumniController::class, 'store'])->name('alumni.store');
+    Route::get('/alumni/{alumnus}', [AlumniController::class, 'show'])->name('alumni.show');
+    Route::get('/alumni/{alumnus}/edit', [AlumniController::class, 'edit'])->name('alumni.edit');
+    Route::put('/alumni/{alumnus}', [AlumniController::class, 'update'])->name('alumni.update');
+    Route::delete('/alumni/{alumnus}', [AlumniController::class, 'destroy'])->name('alumni.destroy');
+});
