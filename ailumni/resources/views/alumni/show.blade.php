@@ -36,7 +36,7 @@
                             </div>
                         </div>
                     </div>
-
+                    <!-- Employment Information -->
                     <div class="mt-8">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Employment Information</h3>
                         <div class="space-y-2 text-gray-600">

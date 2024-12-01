@@ -172,13 +172,37 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const viewButtons = document.querySelectorAll('.view-details');
-    const editButtons = document.querySelectorAll('.edit-response');
-    const responseDetailsModal = document.getElementById('responseDetailsModal');
+    // Debug logging
+    console.log('DOM Content Loaded');
+
+    // Element selection with error checking
     const editResponseModal = document.getElementById('editResponseModal');
+    const editResponseForm = document.getElementById('editResponseForm');
+    const editButtons = document.querySelectorAll('.edit-response');
+    const closeEditModalButton = document.getElementById('closeEditResponseModal');
+    const saveEditButton = document.getElementById('saveEditResponse');
+    const viewButtons = document.querySelectorAll('.view-details');
+    const responseDetailsModal = document.getElementById('responseDetailsModal');
     const closeResponseDetailsModal = document.getElementById('closeResponseDetailsModal');
-    const closeEditResponseModal = document.getElementById('closeEditResponseModal');
-    const saveEditResponse = document.getElementById('saveEditResponse');
+
+    if (!editResponseModal || !editResponseForm || !closeEditModalButton || !saveEditButton || !viewButtons || !responseDetailsModal || !closeResponseDetailsModal) {
+        console.error('Required modal elements not found');
+        return;
+    }
+
+    // Function to show modal
+    function showModal(modal) {
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+    }
+
+    // Function to hide modal
+    function hideModal(modal) {
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
 
     viewButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -194,28 +218,71 @@ document.addEventListener('DOMContentLoaded', function() {
                     content += '</dl>';
                     document.getElementById('responseDetailsContent').innerHTML = content;
                     responseDetailsModal.classList.remove('hidden');
-                });
+                })
+                .catch(error => console.error('Error:', error));
         });
     });
 
+    // Add click handlers to edit buttons
     editButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
             const responseId = this.getAttribute('data-id');
+            console.log('Edit button clicked for response:', responseId);
+
+            // Fetch response data
             fetch(`/admin/pending-responses/${responseId}/edit`)
-                .then(response => response.json())
-                .then(data => {
-                    let content = '';
-                    for (const [key, value] of Object.entries(data.response_data)) {
-                        content += `
-                            <div class="mb-4">
-                                <label for="${key}" class="block text-sm font-medium text-gray-700">${key.replace(/_/g, ' ').charAt(0).toUpperCase() + key.replace(/_/g, ' ').slice(1)}</label>
-                                <input type="text" id="${key}" name="${key}" value="${value}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-                        `;
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
-                    document.getElementById('editResponseForm').innerHTML = content;
-                    document.getElementById('editResponseId').value = responseId;
-                    editResponseModal.classList.remove('hidden');
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Received data:', data);
+                    if (!data.response_data) {
+                        throw new Error('No response data received');
+                    }
+
+                    // Clear existing form content
+                    editResponseForm.innerHTML = '<input type="hidden" name="_token" value="' + document.querySelector('meta[name="csrf-token"]').getAttribute('content') + '">';
+                    
+                    // Add hidden response ID
+                    const idInput = document.createElement('input');
+                    idInput.type = 'hidden';
+                    idInput.id = 'editResponseId';
+                    idInput.name = 'id';
+                    idInput.value = responseId;
+                    editResponseForm.appendChild(idInput);
+
+                    // Add form fields
+                    for (const [key, value] of Object.entries(data.response_data)) {
+                        const div = document.createElement('div');
+                        div.className = 'mb-4';
+
+                        const label = document.createElement('label');
+                        label.className = 'block text-sm font-medium text-gray-700';
+                        label.htmlFor = key;
+                        label.textContent = key.replace(/_/g, ' ').charAt(0).toUpperCase() + key.replace(/_/g, ' ').slice(1);
+
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.id = key;
+                        input.name = key;
+                        input.value = value || '';
+                        input.className = 'mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md';
+
+                        div.appendChild(label);
+                        div.appendChild(input);
+                        editResponseForm.appendChild(div);
+                    }
+
+                    // Show the modal
+                    showModal(editResponseModal);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading response data');
                 });
         });
     });
@@ -224,14 +291,16 @@ document.addEventListener('DOMContentLoaded', function() {
         responseDetailsModal.classList.add('hidden');
     });
 
-    closeEditResponseModal.addEventListener('click', function() {
-        editResponseModal.classList.add('hidden');
+    // Close modal handler
+    closeEditModalButton.addEventListener('click', () => {
+        hideModal(editResponseModal);
     });
 
-    saveEditResponse.addEventListener('click', function() {
-        const form = document.getElementById('editResponseForm');
-        const formData = new FormData(form);
+    // Save changes handler
+    saveEditButton.addEventListener('click', function(e) {
+        e.preventDefault();
         const responseId = document.getElementById('editResponseId').value;
+        const formData = new FormData(editResponseForm);
 
         fetch(`/admin/pending-responses/${responseId}`, {
             method: 'POST',
@@ -240,15 +309,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                editResponseModal.classList.add('hidden');
-                location.reload(); // Reload the page to show updated data
+                hideModal(editResponseModal);
+                window.location.reload();
             } else {
-                alert('Error updating response');
+                throw new Error('Update was not successful');
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating response');
         });
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(e) {
+        if (e.target === editResponseModal) {
+            hideModal(editResponseModal);
+        }
     });
 });
 </script>

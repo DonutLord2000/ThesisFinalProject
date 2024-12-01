@@ -234,10 +234,10 @@
         const unemployedSection = document.getElementById('unemployed-section');
 
         employmentStatus.addEventListener('change', function() {
-            if (this.value === 'Yes') {
+            if (this.value === 'Employed') {
                 employedSection.style.display = 'block';
                 unemployedSection.style.display = 'none';
-            } else if (this.value === 'No') {
+            } else if (this.value === 'Unemployed') {
                 employedSection.style.display = 'none';
                 unemployedSection.style.display = 'block';
             } else {

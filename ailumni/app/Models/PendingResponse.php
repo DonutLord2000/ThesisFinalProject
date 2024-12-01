@@ -11,5 +11,10 @@ class PendingResponse extends Model
     protected $casts = [
         'response_data' => 'array',
     ];
+
+    public function additionalAnswers()
+    {
+        return $this->hasOne(TracerStudyAdditionalAnswer::class, 'pending_response_id');
+    }
 }
 

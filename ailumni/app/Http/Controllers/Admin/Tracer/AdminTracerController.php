@@ -18,26 +18,77 @@ class AdminTracerController extends Controller
 
     public function show(PendingResponse $response)
     {
-        return response()->json($response);
+        $response->load('additionalAnswers');
+        $combinedData = array_merge($response->response_data, $response->additionalAnswers->additional_data ?? []);
+        return response()->json(['response_data' => $combinedData]);
     }
 
     public function edit(PendingResponse $response)
-    {
-        return response()->json($response);
+{
+    try {
+        $response->load('additionalAnswers');
+        $combinedData = array_merge(
+            $response->response_data ?? [],
+            $response->additionalAnswers->additional_data ?? []
+        );
+        
+        return response()->json([
+            'success' => true,
+            'response_data' => $combinedData
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error loading response data',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
-    public function update(Request $request, PendingResponse $response)
-    {
+public function update(Request $request, PendingResponse $response)
+{
+    try {
         $validatedData = $request->validate([
-            // Add validation rules for all fields
             'name' => 'nullable|string|max:255',
             'year_graduated' => 'required|integer',
-            // ... add other fields ...
+            'age' => 'nullable|integer',
+            'gender' => 'nullable|in:Male,Female,Other',
+            'marital_status' => 'nullable|string|max:255',
+            'current_location' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|string|max:255',
+            'degree_program' => 'required|string|max:255',
+            'major' => 'nullable|string|max:255',
+            'minor' => 'nullable|string|max:255',
+            'gpa' => 'nullable|numeric|between:0,4.00',
+            'employment_status' => 'nullable|string|max:255',
+            'job_title' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'industry' => 'nullable|string|max:255',
+            'nature_of_work' => 'nullable|string|max:255',
+            'employment_sector' => 'nullable|string|max:255',
+            'tenure_status' => 'nullable|string|max:255',
+            'monthly_salary' => 'nullable|numeric',
         ]);
 
+        $additionalData = $request->except(array_keys($validatedData));
+        
         $response->update(['response_data' => $validatedData]);
+        
+        if ($response->additionalAnswers) {
+            $response->additionalAnswers->update(['additional_data' => $additionalData]);
+        } else {
+            $response->additionalAnswers()->create(['additional_data' => $additionalData]);
+        }
 
         return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating response',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function approve(PendingResponse $response)

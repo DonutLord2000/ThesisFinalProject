@@ -36,12 +36,17 @@ class TracerStudyController extends Controller
             'employment_sector' => 'nullable|string|max:255',
             'tenure_status' => 'nullable|string|max:255',
             'monthly_salary' => 'nullable|numeric',
-            // Add other fields as needed
         ]);
 
-        PendingResponse::create([
+        $additionalData = $request->except(array_keys($validatedData));
+
+        $pendingResponse = PendingResponse::create([
             'response_data' => $validatedData,
             'status' => 'pending',
+        ]);
+
+        $pendingResponse->additionalAnswers()->create([
+            'additional_data' => $additionalData,
         ]);
 
         return redirect()->route('tracer-study.thank-you');
