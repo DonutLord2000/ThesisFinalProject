@@ -49,7 +49,7 @@
                     </x-nav-link>
                 @endif
 
-                <!-- Contact us -->
+                {{-- <!-- Contact us -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('contact-directory') }}" :active="request()->routeIs('contact-directory')">
                         {{ __('Contact Us') }}
@@ -61,12 +61,24 @@
                     <x-nav-link href="{{ route('about-us') }}" :active="request()->routeIs('about-us')">
                         {{ __('About Us') }}
                     </x-nav-link>
-                </div>
+                </div> --}}
                 
                 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('alumni.index') }}" :active="request()->routeIs('alumni.index')">
                         {{ __('Alumni Index') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('tracer-study.form') }}" :active="request()->routeIs('tracer-study.form')">
+                        {{ __('Tracer Study') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('admin.pending-responses') }}" :active="request()->routeIs('admin.pending-responses')">
+                        {{ __('Tracer Responses') }}
                     </x-nav-link>
                 </div>
             </div>

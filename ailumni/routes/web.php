@@ -8,7 +8,8 @@ use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\NewsPostController;
 use App\Http\Controllers\ChatbotController;
-use App\Actions\Fortify\UpdateUserProfileInformation;
+use App\Http\Controllers\Admin\Tracer\TracerStudyController;
+use App\Http\Controllers\Admin\Tracer\AdminTracerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,4 +81,17 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/alumni/{alumnus}/edit', [AlumniController::class, 'edit'])->name('alumni.edit');
     Route::put('/alumni/{alumnus}', [AlumniController::class, 'update'])->name('alumni.update');
     Route::delete('/alumni/{alumnus}', [AlumniController::class, 'destroy'])->name('alumni.destroy');
+});
+
+Route::get('/tracer-study', [TracerStudyController::class, 'showForm'])->name('tracer-study.form');
+Route::post('/tracer-study', [TracerStudyController::class, 'submitForm'])->name('tracer-study.submit');
+Route::get('/tracer-study/thank-you', [TracerStudyController::class, 'thankYou'])->name('tracer-study.thank-you');
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin/pending-responses', [AdminTracerController::class, 'index'])->name('admin.pending-responses');
+    Route::get('/admin/pending-responses/{response}', [AdminTracerController::class, 'show']);
+    Route::get('/admin/pending-responses/{response}/edit', [AdminTracerController::class, 'edit']);
+    Route::post('/admin/pending-responses/{response}', [AdminTracerController::class, 'update']);
+    Route::post('/admin/pending-responses/{response}/approve', [AdminTracerController::class, 'approve'])->name('admin.approve');
+    Route::post('/admin/pending-responses/{response}/reject', [AdminTracerController::class, 'reject'])->name('admin.reject');
 });
