@@ -1,31 +1,37 @@
 @extends('layouts.alumni')
 
 @section('content')
-<div class="container mt-5">
-    <h1 class="mb-4">Graduate Tracer Study Questionnaire</h1>
+
+    
+    <div class="py-12">
+        
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <h1 class="mb-4 text-3xl font-bold text-black-500">Graduate Tracer Study Questionnaire</h1>
+        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-6 mx-auto">
+            
     <form action="{{ route('tracer-study.submit') }}" method="POST">
         @csrf
 
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Part A: General Information</h2>
+        <div class="ml-5 mr-5 card mb-4 shadow-sm">
+            <div class="mt-5 card-header bg-primary text-black py-3">
+                <h2 class="mb-0 text-xl font-semibold ">Part A: General Information</h2>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="name" class="form-label">1. Name: (Optional)</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <x-label for="name" value="{{ __('1. Name: (Optional)') }}" />
+                    <x-input id="name" type="text" class="mt-1 block w-full" name="name" />
                 </div>
                 <div class="mb-3">
-                    <label for="year_graduated" class="form-label">2. Year of Graduation:</label>
-                    <input type="number" class="form-control" id="year_graduated" name="year_graduated" required>
+                    <x-label for="year_graduated" value="{{ __('2. Year of Graduation:') }}" />
+                    <x-input id="year_graduated" type="number" class="mt-1 block w-full" name="year_graduated" required />
                 </div>
                 <div class="mb-3">
-                    <label for="age" class="form-label">3. Age:</label>
-                    <input type="number" class="form-control" id="age" name="age">
+                    <x-label for="age" value="{{ __('3. Age:') }}" />
+                    <x-input id="age" type="number" class="mt-1 block w-full" name="age" />
                 </div>
                 <div class="mb-3">
-                    <label for="gender" class="form-label">4. Gender:</label>
-                    <select class="form-select" id="gender" name="gender">
+                    <x-label for="gender" value="{{ __('4. Gender:') }}" />
+                    <select class="form-select block mt-1 sm:rounded-lg border-gray-300" id="gender" name="gender">
                         <option value="">Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
@@ -33,83 +39,85 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="marital_status" class="form-label">5. Marital Status:</label>
-                    <input type="text" class="form-control" id="marital_status" name="marital_status">
+                    <x-label for="marital_status" value="{{ __('5. Marital Status:') }}" />
+                    <x-input id="marital_status" type="text" class="mt-1 block w-full" name="marital_status" />
                 </div>
                 <div class="mb-3">
-                    <label for="current_location" class="form-label">6. Current Location:</label>
-                    <input type="text" class="form-control" id="current_location" name="current_location">
+                    <x-label for="current_location" value="{{ __('6. Current Location:') }}" />
+                    <x-input id="current_location" type="text" class="mt-1 block w-full" name="current_location" />
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">7. Contact Information: Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email">
+                    <x-label for="email" value="{{ __('7. Contact Information: Email Address') }}" />
+                    <x-input id="email" type="email" class="mt-1 block w-full" name="email" />
                 </div>
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" name="phone">
+                    <x-label for="phone" value="{{ __('Phone Number') }}" />
+                    <x-input id="phone" type="tel" class="mt-1 block w-full" name="phone" />
                 </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header bg-success text-white">
-                <h2 class="mb-0">Part B: Educational Background</h2>
+        <div class="ml-5 mr-5 card mb-4 shadow-sm">
+            <div class="card-header bg-success text-black py-3">
+                <h2 class="mb-0 text-xl font-semibold">Part B: Educational Background</h2>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="degree_program" class="form-label">1. Degree Program:</label>
-                    <input type="text" class="form-control" id="degree_program" name="degree_program" required>
+                    <x-label for="degree_program" value="{{ __('1. Degree Program:') }}" />
+                    <x-input id="degree_program" type="text" class="mt-1 block w-full" name="degree_program" required />
                 </div>
                 <div class="mb-3">
-                    <label for="major" class="form-label">2. Major: (If applicable)</label>
-                    <input type="text" class="form-control" id="major" name="major">
+                    <x-label for="major" value="{{ __('2. Major: (If applicable)') }}" />
+                    <x-input id="major" type="text" class="mt-1 block w-full" name="major" />
                 </div>
                 <div class="mb-3">
-                    <label for="minor" class="form-label">3. Minor: (If applicable)</label>
-                    <input type="text" class="form-control" id="minor" name="minor">
+                    <x-label for="minor" value="{{ __('3. Minor: (If applicable)') }}" />
+                    <x-input id="minor" type="text" class="mt-1 block w-full" name="minor" />
                 </div>
                 <div class="mb-3">
-                    <label for="gpa" class="form-label">4. Overall GPA:</label>
-                    <input type="number" step="0.01" min="0" max="4" class="form-control" id="gpa" name="gpa">
+                    <x-label for="gpa" value="{{ __('4. Overall GPA:') }}" />
+                    <x-input id="gpa" type="number" step="0.01" min="0" max="4" class="mt-1 block w-full" name="gpa" />
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">5. How satisfied were you with the following aspects of your education?</label>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Aspect</th>
-                                <th>Very Satisfied</th>
-                                <th>Satisfied</th>
-                                <th>Neutral</th>
-                                <th>Dissatisfied</th>
-                                <th>Very Dissatisfied</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(['Quality of Instruction', 'Curriculum Relevance', 'Availability of Resources', 'Faculty Support', 'Career Advising', 'Extracurricular Activities'] as $aspect)
+                    <x-label value="{{ __('5. How satisfied were you with the following aspects of your education?') }}" />
+                    <div class="table-responsive">
+                        <table class="table table-bordered mt-2 ml-4">
+                            <thead class="bg-light">
                                 <tr>
-                                    <td>{{ $aspect }}</td>
-                                    @foreach(['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'] as $rating)
-                                        <td>
-                                            <input type="radio" name="satisfaction_{{ Str::slug($aspect) }}" value="{{ $rating }}" required>
-                                        </td>
-                                    @endforeach
+                                    <th>Aspect</th>
+                                    <th>Very Satisfied</th>
+                                    <th>Satisfied</th>
+                                    <th>Neutral</th>
+                                    <th>Dissatisfied</th>
+                                    <th>Very Dissatisfied</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach(['Quality of Instruction', 'Curriculum Relevance', 'Availability of Resources', 'Faculty Support', 'Career Advising', 'Extracurricular Activities'] as $aspect)
+                                    <tr>
+                                        <td>{{ $aspect }}</td>
+                                        @foreach(['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'] as $rating)
+                                            <td class="text-center">
+                                                <input type="radio" name="satisfaction_{{ Str::slug($aspect) }}" value="{{ $rating }}" required>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header bg-info text-white">
-                <h2 class="mb-0">Part C: Employment Status</h2>
+        <div class="ml-5 mr-5 card mb-4 shadow-sm">
+            <div class="card-header bg-info text-black py-3">
+                <h2 class="mb-0 text-xl font-semibold ">Part C: Employment Status</h2>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <label for="employment_status" class="form-label">1. Are you currently employed?</label>
-                    <select class="form-select" id="employment_status" name="employment_status" required>
+                <div class="mb-3 ">
+                    <x-label for="employment_status" value="{{ __('1. Are you currently employed?') }}" />
+                    <select class="form-select block mt-1 sm:rounded-lg border-gray-300" id="employment_status" name="employment_status" required>
                         <option value="">Select</option>
                         <option value="Employed">Yes</option>
                         <option value="Unemployed">No</option>
@@ -118,112 +126,117 @@
 
                 <div id="employed-section" style="display: none;">
                     <div class="mb-3">
-                        <label for="job_title" class="form-label">Job Title:</label>
-                        <input type="text" class="form-control" id="job_title" name="job_title">
+                        <x-label for="job_title" value="{{ __('Job Title:') }}" />
+                        <x-input id="job_title" type="text" class="mt-1 block w-full" name="job_title" />
                     </div>
                     <div class="mb-3">
-                        <label for="company" class="form-label">Company/Organization:</label>
-                        <input type="text" class="form-control" id="company" name="company">
+                        <x-label for="company" value="{{ __('Company/Organization:') }}" />
+                        <x-input id="company" type="text" class="mt-1 block w-full" name="company" />
                     </div>
                     <div class="mb-3">
-                        <label for="industry" class="form-label">Industry:</label>
-                        <input type="text" class="form-control" id="industry" name="industry">
+                        <x-label for="industry" value="{{ __('Industry:') }}" />
+                        <x-input id="industry" type="text" class="mt-1 block w-full" name="industry" />
                     </div>
                     <div class="mb-3">
-                        <label for="nature_of_work" class="form-label">Nature of Work:</label>
-                        <input type="text" class="form-control" id="nature_of_work" name="nature_of_work" placeholder="e.g., Academic, Supervisory, Technical">
+                        <x-label for="nature_of_work" value="{{ __('Nature of Work:') }}" />
+                        <x-input id="nature_of_work" type="text" class="mt-1 block w-full" name="nature_of_work" placeholder="e.g., Academic, Supervisory, Technical" />
                     </div>
                     <div class="mb-3">
-                        <label for="employment_sector" class="form-label">Employment Sector:</label>
-                        <input type="text" class="form-control" id="employment_sector" name="employment_sector" placeholder="e.g., Public, Private, Self-Employed">
+                        <x-label for="employment_sector" value="{{ __('Employment Sector:') }}" />
+                        <x-input id="employment_sector" type="text" class="mt-1 block w-full" name="employment_sector" placeholder="e.g., Public, Private, Self-Employed" />
                     </div>
                     <div class="mb-3">
-                        <label for="tenure_status" class="form-label">Tenure Status:</label>
-                        <input type="text" class="form-control" id="tenure_status" name="tenure_status" placeholder="e.g., Regular/Permanent, Contractual, Temporary">
+                        <x-label for="tenure_status" value="{{ __('Tenure Status:') }}" />
+                        <x-input id="tenure_status" type="text" class="mt-1 block w-full" name="tenure_status" placeholder="e.g., Regular/Permanent, Contractual, Temporary" />
                     </div>
                     <div class="mb-3">
-                        <label for="monthly_salary" class="form-label">Monthly Salary: (Optional)</label>
-                        <input type="number" class="form-control" id="monthly_salary" name="monthly_salary">
+                        <x-label for="monthly_salary" value="{{ __('Monthly Salary: (Optional)') }}" />
+                        <x-input id="monthly_salary" type="number" class="mt-1 block w-full" name="monthly_salary" />
                     </div>
                     <div class="mb-3">
-                        <label for="time_to_first_job" class="form-label">How long did it take you to find your first job after graduation?</label>
-                        <input type="text" class="form-control" id="time_to_first_job" name="time_to_first_job">
+                        <x-label for="time_to_first_job" value="{{ __('How long did it take you to find your first job after graduation?') }}" />
+                        <x-input id="time_to_first_job" type="text" class="mt-1 block w-full" name="time_to_first_job" />
                     </div>
                     <div class="mb-3">
-                        <label for="job_finding_method" class="form-label">How did you find your first job?</label>
-                        <input type="text" class="form-control" id="job_finding_method" name="job_finding_method" placeholder="e.g., Recommendation, Online Job Portal, Career Fair">
+                        <x-label for="job_finding_method" value="{{ __('How did you find your first job?') }}" />
+                        <x-input id="job_finding_method" type="text" class="mt-1 block w-full" name="job_finding_method" placeholder="e.g., Recommendation, Online Job Portal, Career Fair" />
                     </div>
                     <div class="mb-3">
-                        <label for="job_related_to_degree" class="form-label">Is your current job related to your degree program?</label>
-                        <select class="form-select" id="job_related_to_degree" name="job_related_to_degree">
+                        <x-label for="job_related_to_degree" value="{{ __('Is your current job related to your degree program?') }}" />
+                        <select class="form-select block mt-1 sm:rounded-lg border-gray-300" id="job_related_to_degree" name="job_related_to_degree">
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="job_unrelated_reason" class="form-label">If no, please briefly explain why:</label>
-                        <textarea class="form-control" id="job_unrelated_reason" name="job_unrelated_reason" rows="3"></textarea>
+                        <x-label for="job_unrelated_reason" value="{{ __('If no, please briefly explain why:') }}" />
+                        <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="job_unrelated_reason" name="job_unrelated_reason" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="useful_skills" class="form-label">What skills learned in college are most useful in your current job?</label>
-                        <textarea class="form-control" id="useful_skills" name="useful_skills" rows="3"></textarea>
+                        <x-label for="useful_skills" value="{{ __('What skills learned in college are most useful in your current job?') }}" />
+                        <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="useful_skills" name="useful_skills" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="desired_skills" class="form-label">What skills or knowledge do you wish you had acquired in college that would be beneficial in your current role?</label>
-                        <textarea class="form-control" id="desired_skills" name="desired_skills" rows="3"></textarea>
+                        <x-label for="desired_skills" value="{{ __('What skills or knowledge do you wish you had acquired in college that would be beneficial in your current role?') }}" />
+                        <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="desired_skills" name="desired_skills" rows="3"></textarea>
                     </div>
                 </div>
 
                 <div id="unemployed-section" style="display: none;">
                     <div class="mb-3">
-                        <label for="seeking_employment" class="form-label">Are you currently seeking employment?</label>
-                        <select class="form-select" id="seeking_employment" name="seeking_employment">
+                        <x-label for="seeking_employment" value="{{ __('Are you currently seeking employment?') }}" />
+                        <select class="form-select block sm:rounded-lg border-gray-300 mt-1" id="seeking_employment" name="seeking_employment">
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="job_types_sought" class="form-label">If yes, what types of jobs are you looking for?</label>
-                        <textarea class="form-control" id="job_types_sought" name="job_types_sought" rows="3"></textarea>
+                        <x-label for="job_types_sought" value="{{ __('If yes, what types of jobs are you looking for?') }}" />
+                        <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="job_types_sought" name="job_types_sought" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="employment_challenges" class="form-label">What challenges have you faced in finding employment?</label>
-                        <textarea class="form-control" id="employment_challenges" name="employment_challenges" rows="3"></textarea>
+                        <x-label for="employment_challenges" value="{{ __('What challenges have you faced in finding employment?') }}" />
+                        <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="employment_challenges" name="employment_challenges" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="reason_not_seeking" class="form-label">If you are not seeking employment, please indicate the reason:</label>
-                        <input type="text" class="form-control" id="reason_not_seeking" name="reason_not_seeking" placeholder="e.g., Further Studies, Family Concerns">
+                        <x-label for="reason_not_seeking" value="{{ __('If you are not seeking employment, please indicate the reason:') }}" />
+                        <x-input id="reason_not_seeking" type="text" class="mt-1 block w-full " name="reason_not_seeking" placeholder="e.g., Further Studies, Family Concerns" />
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card mb-4">
-            <div class="card-header bg-warning">
-                <h2 class="mb-0">Part D: Feedback and Suggestions</h2>
+        <div class="ml-5 mr-5 card mb-4 shadow-sm">
+            <div class="card-header bg-warning py-3">
+                <h2 class="mb-0 text-xl font-semibold">Part D: Feedback and Suggestions</h2>
             </div>
             <div class="card-body">
                 <div class="mb-3">
-                    <label for="program_strengths" class="form-label">1. What are the strengths of your undergraduate program?</label>
-                    <textarea class="form-control" id="program_strengths" name="program_strengths" rows="3"></textarea>
+                    <x-label for="program_strengths" value="{{ __('1. What are the strengths of your undergraduate program?') }}" />
+                    <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="program_strengths" name="program_strengths" rows="3"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="program_improvements" class="form-label">2. What areas of your undergraduate program could be improved?</label>
-                    <textarea class="form-control" id="program_improvements" name="program_improvements" rows="3"></textarea>
+                    <x-label for="program_improvements" value="{{ __('2. What areas of your undergraduate program could be improved?') }}" />
+                    <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="program_improvements" name="program_improvements" rows="3"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="program_recommendations" class="form-label">3. What specific recommendations do you have for enhancing the quality and relevance of your degree program?</label>
-                    <textarea class="form-control" id="program_recommendations" name="program_recommendations" rows="3" placeholder="e.g., Curriculum Updates, Enhanced Faculty Training, Improved Facilities"></textarea>
+                    <x-label for="program_recommendations" value="{{ __('3. What specific recommendations do you have for enhancing the quality and relevance of your degree program?') }}" />
+                    <textarea class="form-textarea mt-1 block w-full sm:rounded-lg border-gray-300" id="program_recommendations" name="program_recommendations" rows="3" placeholder="e.g., Curriculum Updates, Enhanced Faculty Training, Improved Facilities"></textarea>
                 </div>
             </div>
         </div>
 
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+        <div class="mr-5 mb-5 d-grid gap-2 text-end">
+            <x-button class="btn-lg">
+                {{ __('Submit') }}
+            </x-button>
         </div>
     </form>
+</div>
+</div>
+</div>
 </div>
 
 @push('scripts')
@@ -249,4 +262,3 @@
 </script>
 @endpush
 @endsection
-

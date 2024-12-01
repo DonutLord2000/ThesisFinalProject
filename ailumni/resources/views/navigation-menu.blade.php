@@ -43,11 +43,11 @@
                     </x-nav-link>
                 @endif
                 
-                @if (auth()->user()->role == 'alumni')
+                {{-- @if (auth()->user()->role == 'alumni')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('alumni.profile.show') }}" :active="request()->routeIs('alumni.profile.show')">
                         {{ __('Alumni Profile') }}
                     </x-nav-link>
-                @endif
+                @endif --}}
 
                 {{-- <!-- Contact us -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
