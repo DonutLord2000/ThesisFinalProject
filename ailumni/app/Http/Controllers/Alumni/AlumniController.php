@@ -9,10 +9,64 @@ use App\Models\Alumnus;
 
 class AlumniController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $alumni = Alumnus::all();
-        return view('alumni.index', compact('alumni'));
+        // Default sort column and direction
+        $sortColumn = $request->get('sort', 'name');
+        $sortDirection = $request->get('direction', 'asc');
+
+        // Validate sort column and direction
+        $validSortColumns = ['name', 'gender', 'degree_program', 'employment_status', 'industry', 'year_graduated', 'marital_status', 'email', 'phone', 'major', 'minor', 'gpa', 'job_title', 'company', 'nature_of_work', 'tenure_status', 'monthly_salary'];
+        $validSortDirections = ['asc', 'desc'];
+
+        if (!in_array($sortColumn, $validSortColumns) || !in_array($sortDirection, $validSortDirections)) {
+            $sortColumn = 'name';
+            $sortDirection = 'asc';
+        }
+
+        // Get search query
+        $search = $request->get('search');
+
+        // Fetch alumni with search and sort
+        $alumni = Alumnus::when($search, function ($query) use ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('degree_program', 'like', '%' . $search . '%')
+                  ->orWhere('industry', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%')
+                  ->orWhere('phone', 'like', '%' . $search . '%')
+                  ->orWhere('marital_status', 'like', '%' . $search . '%')
+                  ->orWhere('job_title', 'like', '%' . $search . '%')
+                  ->orWhere('company', 'like', '%' . $search . '%')
+                  ->orWhere('year_graduated', 'like', '%' . $search . '%');
+            });
+        })
+        ->when($sortColumn && $sortDirection, function ($query) use ($sortColumn, $sortDirection) {
+            return $query->orderBy($sortColumn, $sortDirection);
+        })
+        ->paginate(15);
+
+        $additionalColumns = [
+            'marital_status' => 'Marital Status',
+            'email' => 'Email',
+            'phone' => 'Phone',
+            'major' => 'Major',
+            'minor' => 'Minor',
+            'gpa' => 'GPA',
+            'job_title' => 'Job Title',
+            'company' => 'Company',
+            'nature_of_work' => 'Nature of Work',
+            'tenure_status' => 'Tenure Status',
+            'monthly_salary' => 'Monthly Salary'
+        ];
+
+        // Check if the request is an AJAX request
+        if ($request->ajax()) {
+            return view('alumni.partials.table_rows', compact('alumni', 'additionalColumns', 'sortColumn', 'sortDirection'))->render();
+        }
+
+        // Pass the alumni, sort column, sort direction, search term, and additional columns to the main view
+        return view('alumni.index', compact('alumni', 'sortColumn', 'sortDirection', 'search', 'additionalColumns'));
     }
 
     public function show(Alumnus $alumnus)
@@ -61,3 +115,4 @@ class AlumniController extends Controller
         return redirect()->route('alumni.index')->with('success', 'Alumnus deleted successfully.');
     }
 }
+
