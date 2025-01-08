@@ -13,27 +13,52 @@ class DashboardController extends Controller
 {
     public function index()
     {
-    $totalUsers = User::count();
-    $studentsCount = User::where('role', 'student')->count();
-    $alumniCount = User::where('role', 'alumni')->count();
+        $totalAlumni = DB::table('alumni')->count();
 
-    $newUsersThisMonth = User::whereMonth('created_at', now()->month)->count();
-    $newStudentsThisMonth = User::where('role', 'student')->whereMonth('created_at', now()->month)->count();
-
-    // Employment Data for Pie Chart
-    $employedCount = User::where('role', 'alumni')->where('is_employed', 'yes')->count();
-    $unemployedCount = User::where('role', 'alumni')->where('is_employed', 'no')->count();
-    $unknownCount = User::where('role', 'alumni')->where('is_employed', 'unknown')->count();
-    $employmentData = [$employedCount, $unemployedCount, $unknownCount];
-
-    // Calculate overall employment rate
-    $employmentRate = $alumniCount > 0 ? round(($employedCount / $alumniCount) * 100) : 0;
-
-    // User Registrations Data
-    $dailyRegistrations = $this->getRegistrations('daily', 30);
-    $monthlyRegistrations = $this->getRegistrations('monthly', 12);
-    $yearlyRegistrations = $this->getRegistrations('yearly', 5);
-
+        $genderDistribution = DB::table('alumni')
+            ->select('gender', DB::raw('count(*) as count'))
+            ->groupBy('gender')
+            ->pluck('count', 'gender')
+            ->toArray();
+    
+        $graduationYearTrends = DB::table('alumni')
+            ->select('year_graduated', DB::raw('count(*) as count'))
+            ->groupBy('year_graduated')
+            ->orderBy('year_graduated')
+            ->pluck('count', 'year_graduated')
+            ->toArray();
+    
+        $topIndustries = DB::table('alumni')
+            ->select('industry', DB::raw('count(*) as count'))
+            ->groupBy('industry')
+            ->orderByDesc('count')
+            ->limit(3)
+            ->pluck('count', 'industry')
+            ->toArray();
+    
+        $topDegreePrograms = DB::table('alumni')
+            ->select('degree_program', DB::raw('count(*) as count'))
+            ->groupBy('degree_program')
+            ->orderByDesc('count')
+            ->limit(3)
+            ->pluck('count', 'degree_program')
+            ->toArray();
+    
+            $jobTitlesByMajor = DB::table('alumni')
+            ->select('degree_program', 'job_title', 'industry')
+            ->get()
+            ->groupBy('degree_program')
+            ->map(function ($group) {
+                $jobTitles = $group->pluck('job_title')->unique()->take(3); // Top 3 job titles per degree
+                $industries = $group->pluck('industry')->unique()->take(3); // Top 3 industries per degree
+                return [
+                    'job_titles' => $jobTitles,
+                    'industries' => $industries,
+                ];
+            })
+            ->take(5) // Top 5 degree programs only
+            ->toArray();
+        
     // Active Users
     $now = Carbon::now();
 
@@ -71,13 +96,15 @@ class DashboardController extends Controller
 
 
     return view('dashboard', compact(
-        'totalUsers', 'studentsCount', 'alumniCount',
-        'newUsersThisMonth', 'newStudentsThisMonth', 'employmentRate',
-        'employmentData',
-        'dailyRegistrations', 'monthlyRegistrations', 'yearlyRegistrations',
+
         'dailyActiveUsers', 'weeklyActiveUsers', 'monthlyActiveUsers',
         'dailyActiveUsersGrowth','weeklyActiveUsersGrowth','monthlyActiveUsersGrowth',
-        'newsPosts',
+        'newsPosts', 'totalAlumni',
+        'genderDistribution',
+        'graduationYearTrends',
+        'topIndustries',
+        'topDegreePrograms',
+        'jobTitlesByMajor',
     ));
 }
 
