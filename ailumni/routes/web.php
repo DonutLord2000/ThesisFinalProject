@@ -10,6 +10,10 @@ use App\Http\Controllers\NewsPostController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\Admin\Tracer\TracerStudyController;
 use App\Http\Controllers\Admin\Tracer\AdminTracerController;
+use App\Http\Controllers\Alumni\ProfileController;
+use App\Http\Controllers\Alumni\ExperienceController;
+use App\Http\Controllers\Alumni\EducationController;
+use App\Http\Controllers\Alumni\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,3 +99,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/pending-responses/{response}/approve', [AdminTracerController::class, 'approve'])->name('admin.approve');
     Route::post('/admin/pending-responses/{response}/reject', [AdminTracerController::class, 'reject'])->name('admin.reject');
 });
+
+// Alumni new profile creation
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/experience', [ProfileController::class, 'addExperience'])->name('experience.add');
+    Route::post('/profile/education', [ProfileController::class, 'addEducation'])->name('education.add');
+    Route::delete('/profile/experience/{id}', [ProfileController::class, 'destroyExperience'])->name('profile.destroyExperience');
+    Route::delete('/profile/education/{id}', [ProfileController::class, 'destroyEducation'])->name('profile.destroyEducation');
+
+    Route::post('/verification-request', [VerificationController::class, 'store'])->name('verification.request');
+});
+
+Route::group(['middleware' => 'admin'], function () {
+    Route::get('/profiles', [ProfileController::class, 'index'])->name('profiles.index');
+    Route::get('/profiles/{user}', [ProfileController::class, 'show'])->name('profiles.show');
+    Route::get('/verification-requests', [VerificationController::class, 'index'])->name('verification-requests.index');
+    Route::put('/verification-request/{verificationRequest}/review', [VerificationController::class, 'review'])->name('verification.review');
+    Route::put('/verification-requests/{verificationRequest}', [VerificationController::class, 'review'])->name('verification-requests.review');
+});
+
+
+Route::get('/profiles/{user}', [ProfileController::class, 'show'])->name('profiles.show');
