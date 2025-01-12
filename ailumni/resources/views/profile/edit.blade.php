@@ -235,7 +235,7 @@
                     </div>
 
                     <!-- Experience List -->
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-4 ">
                         @foreach($user->experiences as $experience)
                             <div class="mb-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-lg">
                                 <div class="flex justify-between">
