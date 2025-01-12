@@ -113,7 +113,7 @@
                         
                         @if($errors->any())
                             <div class="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
-                                <h4 class="font-bold">Validation Errors:</h4>
+                                <h4 class="font-bold">Validation Error:</h4>
                                 <ul>
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
@@ -178,6 +178,37 @@
                                 <x-input id="company" name="company" type="text" class="mt-1 block w-full" required />
                             </div>
 
+                            <div>
+                                <x-label for="employment_type" value="{{ __('Employment Type') }}" />
+                                <select id="employment_type" name="employment_type" class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Full-time">Full-time</option>
+                                    <option value="Part-time">Part-time</option>
+                                    <option value="Contract">Contract</option>
+                                    <option value="Internship">Internship</option>
+                                </select>
+                            </div>
+                        
+                            <div>
+                                <x-label for="location" value="{{ __('Location') }}" />
+                                <x-input id="location" name="location" type="text" class="mt-1 block w-full" required />
+                            </div>
+                        
+                            <div>
+                                <x-label for="location_type" value="{{ __('Location Type') }}" />
+                                <select id="location_type" name="location_type" class="mt-1 block w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                                    <option value="">Select Type</option>
+                                    <option value="On-site">On-site</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="Remote">Remote</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-center mt-4">
+                                <input id="current_role" name="current_role" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <label for="current_role" class="ml-2 text-sm text-gray-600">I currently work here</label>
+                            </div>
+
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <x-label for="start_date" value="{{ __('Start Date') }}" />
@@ -188,11 +219,6 @@
                                     <x-label for="end_date" value="{{ __('End Date') }}" />
                                     <x-input id="end_date" name="end_date" type="date" class="mt-1 block w-full" :disabled="old('current_role')" />
                                 </div>
-                            </div>
-
-                            <div class="flex items-center">
-                                <input id="current_role" name="current_role" type="checkbox" class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                <label for="current_role" class="ml-2 text-sm text-gray-600">I currently work here</label>
                             </div>
 
                             <div>
@@ -209,34 +235,39 @@
                     </div>
 
                     <!-- Experience List -->
-                    @foreach($user->experiences as $experience)
-                        <div class="mb-4 p-4 hover:bg-gray-50 rounded-lg">
-                            <div class="flex justify-between">
-                                <div>
-                                    <h3 class="font-semibold text-lg">{{ $experience->title }}</h3>
-                                    <p class="text-gray-600">{{ $experience->company }}</p>
-                                    <p class="text-sm text-gray-500">
-                                        {{ $experience->start_date->format('M Y') }} - 
-                                        {{ $experience->current_role ? 'Present' : $experience->end_date->format('M Y') }}
-                                    </p>
-                                    @if($experience->description)
-                                        <p class="mt-2 text-gray-600">{{ $experience->description }}</p>
-                                    @endif
-                                </div>
-                                <div class="flex space-x-2">
-                                    <form action="{{ route('profile.destroyExperience', $experience->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this experience?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-gray-400 hover:text-gray-500">
-                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                    <div class="grid grid-cols-2 gap-4">
+                        @foreach($user->experiences as $experience)
+                            <div class="mb-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-lg">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-lg">{{ $experience->title }}</h3>
+                                        <p class="text-gray-600">{{ $experience->company }}</p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $experience->employment_type }} · {{ $experience->location }} ({{ $experience->location_type }})
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $experience->start_date->format('M Y') }} - 
+                                            {{ $experience->current_role ? 'Present' : $experience->end_date->format('M Y') }}
+                                        </p>
+                                        @if($experience->description)
+                                            <p class="mt-2 text-gray-600">{{ $experience->description }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <form action="{{ route('profile.destroyExperience', $experience->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this experience?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-gray-400 hover:text-gray-500">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -300,7 +331,7 @@
 
                     <!-- Education List -->
                     @foreach($user->education as $education)
-                        <div class="mb-4 p-4 hover:bg-gray-50 rounded-lg">
+                        <div class="mb-4 p-4 bg-gray-50 hover:bg-gray-100 rounded-lg">
                             <div class="flex justify-between">
                                 <div>
                                     <h3 class="font-semibold text-lg">{{ $education->school }}</h3>
@@ -338,9 +369,15 @@
     <script>
         document.getElementById('current_role').addEventListener('change', function() {
             const endDateInput = document.getElementById('end_date');
-            endDateInput.disabled = this.checked;
             if (this.checked) {
+                endDateInput.disabled = true;
+                endDateInput.classList.add('bg-gray-200', 'cursor-not-allowed');
                 endDateInput.value = '';
+                this.value = '1'; // Set to '1' when checked
+            } else {
+                endDateInput.disabled = false;
+                endDateInput.classList.remove('bg-gray-200', 'cursor-not-allowed');
+                this.value = '0'; // Set to '0' when unchecked
             }
         });
 
