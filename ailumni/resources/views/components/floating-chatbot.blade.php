@@ -109,19 +109,27 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load chat history from localStorage
     function loadChatHistory() {
         const storedHistory = localStorage.getItem('chatHistory');
+        chatMessages.innerHTML = ''; // Clear existing chat messages
         if (storedHistory) {
             chatHistory = JSON.parse(storedHistory);
-            // Filter messages from the last hour
             const oneHourAgo = Date.now() - 60 * 60 * 1000;
             chatHistory = chatHistory.filter(msg => msg.timestamp > oneHourAgo);
-            // Display loaded messages
-            chatHistory.forEach(msg => addMessage(msg.role, msg.content));
+            chatHistory.forEach(msg => addMessage(msg.role, msg.content, false));
         }
+        scrollToBottom(); // Ensure the chat is scrolled to the bottom
     }
 
     // Save chat history to localStorage
     function saveChatHistory() {
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    }
+
+    // Scroll chat to the bottom
+    function scrollToBottom() {
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
     }
 
     // Load chat history on page load
@@ -130,25 +138,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // Open/close chat window
     chatIcon.addEventListener('click', () => {
         chatWindow.classList.toggle('hidden');
+        if (!chatWindow.classList.contains('hidden')) {
+            scrollToBottom(); // Scroll to the bottom when the chat window is opened
+        }
     });
 
     // Toggle fullscreen/scaled-up view
     fullscreenChat.addEventListener('click', toggleFullscreen);
-    overlay.addEventListener('click', toggleFullscreen); // Close fullscreen on overlay click
+    overlay.addEventListener('click', toggleFullscreen);
 
     function toggleFullscreen() {
         const isScaled = chatWindow.classList.contains('scaled-fullscreen');
-
-        // Toggle scaled fullscreen state
         chatWindow.classList.toggle('scaled-fullscreen', !isScaled);
         overlay.classList.toggle('visible', !isScaled);
-
         if (!isScaled) {
-            chatWindow.style.width = '65rem';
-            chatWindow.style.height = '75vh';
+            updateFullscreenSize();
+            window.addEventListener('resize', updateFullscreenSize);
         } else {
             chatWindow.style.width = '';
             chatWindow.style.height = '';
+            window.removeEventListener('resize', updateFullscreenSize);
+        }
+    }
+
+    function updateFullscreenSize() {
+        if (chatWindow.classList.contains('scaled-fullscreen')) {
+            chatWindow.style.width = `${window.innerWidth * 0.8}px`;
+            chatWindow.style.height = `${window.innerHeight * 0.8}px`;
         }
     }
 
@@ -196,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Add message to chat window and history
-    function addMessage(role, content) {
+    function addMessage(role, content, addToHistory = true) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('mb-4', role === 'user' ? 'text-right' : 'text-left');
 
@@ -214,14 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
         messageElement.appendChild(innerElement);
         chatMessages.appendChild(messageElement);
 
-        chatMessages.scrollTo({
-            top: chatMessages.scrollHeight,
-            behavior: 'smooth'
-        });
+        scrollToBottom();
 
-        // Add message to history
-        chatHistory.push({ role, content, timestamp: Date.now() });
-        saveChatHistory();
+        if (addToHistory) {
+            chatHistory.push({ role, content, timestamp: Date.now() });
+            saveChatHistory();
+        }
     }
 
     // Typewriter effect for assistant messages
@@ -244,15 +258,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 i++;
                 setTimeout(typeWriter, speed);
             }
-            chatMessages.scrollTo({
-                top: chatMessages.scrollHeight,
-                behavior: 'smooth'
-            });
+            scrollToBottom();
         }
 
         typeWriter();
 
-        // Add message to history after typewriter effect is complete
         setTimeout(() => {
             chatHistory.push({ role, content, timestamp: Date.now() });
             saveChatHistory();
