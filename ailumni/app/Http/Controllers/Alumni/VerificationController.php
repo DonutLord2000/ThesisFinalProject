@@ -12,6 +12,20 @@ use Illuminate\Support\Facades\Log;
 
 class VerificationController extends Controller
 {
+    public function index()
+    {
+        $pendingRequests = VerificationRequest::with(['user', 'documents'])
+            ->where('status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        $processedRequests = VerificationRequest::with(['user', 'documents'])
+            ->whereIn('status', ['approved', 'rejected'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        return view('admin.verification-requests.index', compact('pendingRequests', 'processedRequests'));
+    }
     public function store(Request $request)
     {
         Log::info('Verification request initiated', ['user_id' => auth()->id()]);
@@ -20,6 +34,12 @@ class VerificationController extends Controller
             'documents' => 'required|array|min:1',
             'documents.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048'
         ]);
+
+        $existingRequest = auth()->user()->verificationRequests()->where('status', 'pending')->first();
+
+        if ($existingRequest) {
+            return redirect()->back()->with('error', 'You already have a pending verification request.');
+        }
 
         try {
             DB::beginTransaction();
@@ -63,6 +83,17 @@ class VerificationController extends Controller
         }
     }
 
+    public function cancel(VerificationRequest $verificationRequest)
+    {
+        if ($verificationRequest->user_id !== auth()->id() || $verificationRequest->status !== 'pending') {
+            return redirect()->back()->with('error', 'You cannot cancel this verification request.');
+        }
+
+        $verificationRequest->delete();
+
+        return redirect()->back()->with('success', 'Verification request cancelled successfully.');
+    }   
+
 
     public function review(Request $request, VerificationRequest $verificationRequest)
     {
@@ -81,5 +112,35 @@ class VerificationController extends Controller
         }
 
         return redirect()->back()->with('success', 'Verification request updated successfully');
+    }
+
+    public function showDocument($id)
+    {
+        $document = VerificationDocument::findOrFail($id);
+        
+        if (!Storage::disk('private')->exists($document->document_path)) {
+            abort(404);
+        }
+
+        $file = Storage::disk('private')->get($document->document_path);
+        $type = Storage::disk('private')->mimeType($document->document_path);
+
+        return response($file, 200)->header('Content-Type', $type);
+    }
+
+    public function approve(VerificationRequest $verificationRequest)
+    {
+        $verificationRequest->update(['status' => 'approved']);
+        $verificationRequest->user->profile->update(['is_verified' => true]);
+
+        return redirect()->back()->with('success', 'Verification request approved successfully');
+    }
+
+    public function reject(VerificationRequest $verificationRequest)
+    {
+        $verificationRequest->update(['status' => 'rejected']);
+        $verificationRequest->user->profile->update(['is_verified' => false]);
+
+        return redirect()->back()->with('success', 'Verification request rejected successfully');
     }
 }

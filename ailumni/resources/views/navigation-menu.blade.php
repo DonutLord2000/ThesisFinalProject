@@ -44,6 +44,12 @@
                     </div>
                 @endif
 
+                @if (auth()->user()->role == 'admin')
+                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('verification.index') }}" :active="request()->routeIs('verification.index')">
+                        {{ __('Verification Request Management') }}
+                    </x-nav-link>
+                @endif
+
 
                 <!-- Discussion Area -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">

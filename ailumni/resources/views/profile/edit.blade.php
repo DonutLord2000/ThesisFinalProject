@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen bg-gray-100 py-10 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <!-- Profile Header Section -->
             <div class="mt-6 bg-white shadow rounded-lg">
@@ -10,7 +10,7 @@
                             @if($user->profile?->cover_picture)
                                 <img src="{{ Storage::url($user->profile->cover_picture) }}" 
                                     alt="Cover photo" 
-                                    class="w-full h-full object-cover">
+                                    class="w-full h-full object-cover rounded-t-lg">
                             @endif
                             <label for="cover_upload" class="absolute right-4 bottom-4 cursor-pointer">
                                 <span class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25">
@@ -59,12 +59,15 @@
                                 <div class="flex items-center gap-2">
                                     <h1 class="text-2xl font-bold text-gray-900">{{ $user->name }}</h1>
                                     @if($user->profile?->is_verified)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            Verified
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            <svg class="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Verified Alumni
                                         </span>
                                     @else
                                         <button type="button" onclick="document.getElementById('verification-form').classList.toggle('hidden')" class="text-blue-600 text-sm hover:underline">
-                                            Verify that your an alumni
+                                            Verify that youre an alumni
                                         </button>
                                     @endif
                                 </div>
@@ -78,30 +81,79 @@
                             </button>
                         </div>
 
-                        <!-- Verification Form -->
-                        <form id="verification-form" action="{{ route('verification.request') }}" method="POST" enctype="multipart/form-data" class="mt-4 p-4 bg-gray-50 rounded-lg hidden">
-                            @csrf
-                            <h3 class="text-lg font-medium text-gray-900 mb-4">Request Verification</h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Upload Verification Documents</label>
-                                    <p class="text-sm text-gray-500 mb-2">Please upload government-issued ID or other relevant documentation</p>
-                                    <input type="file" name="documents[]" multiple required class="block w-full text-sm text-gray-500
-                                        file:mr-4 file:py-2 file:px-4
-                                        file:rounded-full file:border-0
-                                        file:text-sm file:font-semibold
-                                        file:bg-blue-50 file:text-blue-700
-                                        hover:file:bg-blue-100
-                                    "/>
-                                    <div id="selected-files" class="mt-2 space-y-2"></div>
-                                </div>
-                                <div class="flex justify-end">
-                                    <x-button type="submit">
-                                        Submit Verification Request
-                                    </x-button>
-                                </div>
+                        <!-- Verification Section -->
+                        <div class="mt-6 bg-white shadow rounded-lg">
+                            <div class="p-6">
+                                <h2 class="text-xl font-bold text-gray-900 mb-4">Verification Status</h2>
+                                
+                                @if(!$user->profile)
+                                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                                        <p class="font-bold">Profile Not Set Up</p>
+                                        <p>Please complete your profile setup first.</p>
+                                    </div>
+                                @elseif($user->profile?->is_verified)
+                                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+                                        <p class="font-bold">Verified</p>
+                                        <p>Your account has been verified.</p>
+                                    </div>
+                                @else
+                                    @php
+                                        $pendingRequest = $user->verificationRequests()->where('status', 'pending')->first();
+                                        $rejectedRequest = $user->verificationRequests()->where('status', 'rejected')->latest()->first();
+                                    @endphp
+                    
+                                    @if($pendingRequest)
+                                        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+                                            <p class="font-bold">Pending Verification</p>
+                                            <p>Your verification request is currently being reviewed.</p>
+                                            <form action="{{ route('verification.cancel', $pendingRequest) }}" method="POST" class="mt-2">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-800 underline">Cancel Request</button>
+                                            </form>
+                                        </div>
+                                    @elseif($rejectedRequest)
+                                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+                                            <p class="font-bold">Verification Rejected</p>
+                                            <p>Your previous verification request was rejected. You can submit a new request.</p>
+                                            @if($rejectedRequest->admin_notes)
+                                                <p class="mt-2"><strong>Reason:</strong> {{ $rejectedRequest->admin_notes }}</p>
+                                            @endif
+                                        </div>
+                                    @endif
+                    
+                                    @if(!$pendingRequest)
+                                        <button type="button" onclick="document.getElementById('verification-form').classList.toggle('hidden')" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                            Request Verification
+                                        </button>
+                    
+                                        <form id="verification-form" action="{{ route('verification.request') }}" method="POST" enctype="multipart/form-data" class="mt-4 p-4 bg-gray-50 rounded-lg hidden">
+                                            @csrf
+                                            <h3 class="text-lg font-medium text-gray-900 mb-4">Request Verification</h3>
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700">Upload Verification Documents</label>
+                                                    <p class="text-sm text-gray-500 mb-2">Please upload government-issued ID or other relevant documentation</p>
+                                                    <input type="file" name="documents[]" multiple required class="block w-full text-sm text-gray-500
+                                                        file:mr-4 file:py-2 file:px-4
+                                                        file:rounded-full file:border-0
+                                                        file:text-sm file:font-semibold
+                                                        file:bg-blue-50 file:text-blue-700
+                                                        hover:file:bg-blue-100
+                                                    "/>
+                                                    <div id="selected-files" class="mt-2 space-y-2"></div>
+                                                </div>
+                                                <div class="flex justify-end">
+                                                    <x-button type="submit">
+                                                        Submit Verification Request
+                                                    </x-button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    @endif
+                                @endif
                             </div>
-                        </form>
+                        </div>
                         
                         <!-- Debug Information -->
                         @if(session('error'))

@@ -8,9 +8,19 @@ use App\Models\Experience;
 use App\Models\Education;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+
+    public function show(User $user)
+    {
+        $user->load(['profile', 'experiences', 'education', 'verificationRequests' => function ($query) {
+            $query->latest();
+        }]);
+
+        return view('alumni.show-profile', compact('user'));
+    }
     public function edit()
     {
         $user = auth()->user()->load(['profile', 'experiences', 'education']);

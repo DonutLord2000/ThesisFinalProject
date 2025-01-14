@@ -4,7 +4,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
     </button>
-    <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-96 h-96 fixed bottom-16 right-0 transition-all duration-500 ease-in-out flex flex-col">
+    <div id="chat-window" class="hidden bg-white rounded-lg shadow-xl w-96 h-96 fixed bottom-16 right-0 transition-all duration-500 ease-in-out flex flex-col mr-5">
         <div class="flex justify-between items-center p-4 border-b">
             <h3 class="text-lg font-semibold">AI-Lumni</h3>
             <button id="fullscreen-chat" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary" aria-label="Fullscreen chat">
@@ -14,7 +14,7 @@
             </button>
         </div>
         <div id="chat-messages" class="flex-grow overflow-y-auto p-4 space-y-4 bg-gray-300"></div>
-        <div id="thinking-indicator" class="hidden p-2 text-blue-500 font-bold animate-pulse">AI-Lumni is thinking...</div>
+        <div id="thinking-indicator" class="hidden text-blue-500 font-bold animate-pulse bg-transparent">AI-Lumni is thinking...</div>
         <form id="chat-form" class="p-4 border-t flex items-center space-x-2">
             <input type="text" id="user-input" class="flex-grow rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" placeholder="Type your message..." required>
             <button type="submit" class="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Send</button>
@@ -83,8 +83,12 @@
 
     /* New style for thinking indicator */
     #thinking-indicator {
-        animation: blink 1s infinite;
+        padding: 0 !important; /* Remove padding */
+        margin: 0 !important;  /* Remove margins */
+        border: none !important; /* Ensure no borders */
+        background-color: transparent !important; /* Fully transparent */
     }
+
 
     @keyframes blink {
         0% { opacity: 1; }
@@ -211,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Add message to chat window and history
+    // Add message to chat window and load history
     function addMessage(role, content, addToHistory = true) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('mb-4', role === 'user' ? 'text-right' : 'text-left');

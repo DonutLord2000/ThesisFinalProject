@@ -111,15 +111,18 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile/education/{id}', [ProfileController::class, 'destroyEducation'])->name('profile.destroyEducation');
 
     Route::post('/verification-request', [VerificationController::class, 'store'])->name('verification.request');
+    Route::delete('/verification/{verificationRequest}/cancel', [VerificationController::class, 'cancel'])->name('verification.cancel');
+    Route::get('/alumni-profile/{user}', [ProfileController::class, 'show'])->name('alumni.profile.show');
 });
 
 Route::group(['middleware' => 'admin'], function () {
     Route::get('/profiles', [ProfileController::class, 'index'])->name('profiles.index');
-    Route::get('/profiles/{user}', [ProfileController::class, 'show'])->name('profiles.show');
     Route::get('/verification-requests', [VerificationController::class, 'index'])->name('verification-requests.index');
     Route::put('/verification-request/{verificationRequest}/review', [VerificationController::class, 'review'])->name('verification.review');
     Route::put('/verification-requests/{verificationRequest}', [VerificationController::class, 'review'])->name('verification-requests.review');
+    
+    Route::get('/verification-requests', [VerificationController::class, 'index'])->name('verification.index');
+    Route::get('/verification-documents/{id}', [VerificationController::class, 'showDocument'])->name('verification.show-document');
+    Route::put('/verification-requests/{verificationRequest}/approve', [VerificationController::class, 'approve'])->name('verification.approve');
+    Route::put('/verification-requests/{verificationRequest}/reject', [VerificationController::class, 'reject'])->name('verification.reject');
 });
-
-
-Route::get('/profiles/{user}', [ProfileController::class, 'show'])->name('profiles.show');
