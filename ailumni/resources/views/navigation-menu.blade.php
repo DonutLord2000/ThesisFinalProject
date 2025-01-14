@@ -57,13 +57,6 @@
                         {{ __('Lessons') }}
                     </x-nav-link>
                 @endif
-                
-                {{-- @if (auth()->user()->role == 'alumni')
-                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('alumni.profile.show') }}" :active="request()->routeIs('alumni.profile.show')">
-                        {{ __('Alumni Profile') }}
-                    </x-nav-link>
-                @endif --}}
-
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('tracer-study.form') }}" :active="request()->routeIs('tracer-study.form')">
@@ -160,6 +153,49 @@
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <!-- Discussion Area -->
+            <x-responsive-nav-link href="{{ route('threads.index') }}" :active="request()->routeIs('threads.index')">
+                {{ __('Discussion') }}
+            </x-responsive-nav-link>
+
+            <!-- Tracer Study -->
+            <x-responsive-nav-link href="{{ route('tracer-study.form') }}" :active="request()->routeIs('tracer-study.form')">
+                {{ __('Tracer Study') }}
+            </x-responsive-nav-link>
+
+            <!-- Alumni Profile -->
+            <x-responsive-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
+                {{ __('Alumni Profile') }}
+            </x-responsive-nav-link>
+
+            <!-- Admin Links -->
+            @if (auth()->user()->role == 'admin')
+                <div class="border-t border-gray-200 pt-2">
+                    <div class="text-gray-600 text-sm font-semibold px-4">
+                        {{ __('Admin Panel') }}
+                    </div>
+                    <x-responsive-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
+                        {{ __('User Management') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">
+                        {{ __('News Management') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('admin.pending-responses') }}" :active="request()->routeIs('admin.pending-responses')">
+                        {{ __('Tracer Responses') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link href="{{ route('alumni.index') }}" :active="request()->routeIs('alumni.index')">
+                        {{ __('Alumni Index') }}
+                    </x-responsive-nav-link>
+                </div>
+            @endif
+
+            <!-- Student Links -->
+            @if (auth()->user()->role == 'student')
+                <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    {{ __('Lessons') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->
@@ -192,9 +228,7 @@
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf
-
-                    <x-responsive-nav-link href="{{ route('logout') }}"
-                                   @click.prevent="$root.submit();">
+                    <x-responsive-nav-link href="{{ route('logout') }}" @click.prevent="$root.submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
