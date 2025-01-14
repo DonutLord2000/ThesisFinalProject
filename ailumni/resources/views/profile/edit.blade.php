@@ -64,7 +64,7 @@
                                         </span>
                                     @else
                                         <button type="button" onclick="document.getElementById('verification-form').classList.toggle('hidden')" class="text-blue-600 text-sm hover:underline">
-                                            Add verification badge
+                                            Verify that your an alumni
                                         </button>
                                     @endif
                                 </div>
