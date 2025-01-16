@@ -58,6 +58,12 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('alumni.all-profiles.index') }}" :active="request()->routeIs('alumni.all-profiles.index')">
+                        {{ __('All Profiles') }}
+                    </x-nav-link>
+                </div>
+
                 @if (auth()->user()->role == 'student')
                     <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Lessons') }}

@@ -113,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/verification-request', [VerificationController::class, 'store'])->name('verification.request');
     Route::delete('/verification/{verificationRequest}/cancel', [VerificationController::class, 'cancel'])->name('verification.cancel');
     Route::get('/alumni-profile/{user}', [ProfileController::class, 'show'])->name('alumni.profile.show');
+    Route::get('/alumni-profiles', [ProfileController::class, 'index'])->name('alumni.all-profiles.index');
 });
 
 Route::group(['middleware' => 'admin'], function () {

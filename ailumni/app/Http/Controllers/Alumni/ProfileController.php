@@ -12,7 +12,36 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = User::with('profile')->whereHas('profile');
 
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('profile', function ($q) use ($search) {
+                      $q->where('address', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $showVerified = $request->input('show_verified') === 'true';
+
+        if ($showVerified) {
+            $query->whereHas('profile', function ($q) {
+                $q->where('is_verified', true);
+            });
+        }
+
+        $profiles = $query->paginate(20);
+
+        if ($request->ajax()) {
+            return view('alumni.partials.profile-cards', compact('profiles'))->render();
+        }
+
+        return view('alumni.all-profiles', compact('profiles'));
+    }
     public function show(User $user)
     {
         $user->load(['profile', 'experiences', 'education', 'verificationRequests' => function ($query) {

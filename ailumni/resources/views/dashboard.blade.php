@@ -109,98 +109,101 @@
                 
             </div>
             @endif
-            <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-lg font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    Active Users Overview
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Daily Active Users -->
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-2 bg-blue-500 rounded-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div class="flex items-center text-sm text-blue-600">
-                                <span class="font-medium">Today</span>
-                            </div>
-                        </div>
-                        <h4 class="text-lg font-semibold text-gray-700 mb-1">Daily Active Users</h4>
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl font-bold text-gray-900">{{ $dailyActiveUsers }}</span>
-                            @if(isset($dailyActiveUsersGrowth))
-                                <div class="flex items-center {{ $dailyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="{{ $dailyActiveUsersGrowth >= 0 
-                                                ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
-                                                : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+
+            <div class="max-w-7xl mx-auto">
+                <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-6 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Active Users Overview
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Daily Active Users -->
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-2 bg-blue-500 rounded-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <span class="font-medium">{{ abs($dailyActiveUsersGrowth) }}%</span>
                                 </div>
-                            @endif
-                        </div>
-                    </div>
-            
-                    <!-- Weekly Active Users -->
-                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-2 bg-purple-500 rounded-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                                <div class="flex items-center text-sm text-blue-600">
+                                    <span class="font-medium">Today</span>
+                                </div>
                             </div>
-                            <div class="flex items-center text-sm text-purple-600">
-                                <span class="font-medium">This Week</span>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-1">Daily Active Users</h4>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-gray-900">{{ $dailyActiveUsers }}</span>
+                                @if(isset($dailyActiveUsersGrowth))
+                                    <div class="flex items-center {{ $dailyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="{{ $dailyActiveUsersGrowth >= 0 
+                                                    ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
+                                                    : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+                                        </svg>
+                                        <span class="font-medium">{{ abs($dailyActiveUsersGrowth) }}%</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-700 mb-1">Weekly Active Users</h4>
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl font-bold text-gray-900">{{ $weeklyActiveUsers }}</span>
-                            @if(isset($weeklyActiveUsersGrowth))
-                                <div class="flex items-center {{ $weeklyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="{{ $weeklyActiveUsersGrowth >= 0 
-                                                ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
-                                                : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+                
+                        <!-- Weekly Active Users -->
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-2 bg-purple-500 rounded-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="font-medium">{{ abs($weeklyActiveUsersGrowth) }}%</span>
                                 </div>
-                            @endif
-                        </div>
-                    </div>
-            
-                    <!-- Monthly Active Users -->
-                    <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="p-2 bg-green-500 rounded-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                </svg>
+                                <div class="flex items-center text-sm text-purple-600">
+                                    <span class="font-medium">This Week</span>
+                                </div>
                             </div>
-                            <div class="flex items-center text-sm text-green-600">
-                                <span class="font-medium">This Month</span>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-1">Weekly Active Users</h4>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-gray-900">{{ $weeklyActiveUsers }}</span>
+                                @if(isset($weeklyActiveUsersGrowth))
+                                    <div class="flex items-center {{ $weeklyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="{{ $weeklyActiveUsersGrowth >= 0 
+                                                    ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
+                                                    : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+                                        </svg>
+                                        <span class="font-medium">{{ abs($weeklyActiveUsersGrowth) }}%</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-700 mb-1">Monthly Active Users</h4>
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl font-bold text-gray-900">{{ $monthlyActiveUsers }}</span>
-                            @if(isset($monthlyActiveUsersGrowth))
-                                <div class="flex items-center {{ $monthlyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                            d="{{ $monthlyActiveUsersGrowth >= 0 
-                                                ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
-                                                : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+                
+                        <!-- Monthly Active Users -->
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md hover:shadow-md transition-shadow duration-300">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="p-2 bg-green-500 rounded-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
-                                    <span class="font-medium">{{ abs($monthlyActiveUsersGrowth) }}%</span>
                                 </div>
-                            @endif
+                                <div class="flex items-center text-sm text-green-600">
+                                    <span class="font-medium">This Month</span>
+                                </div>
+                            </div>
+                            <h4 class="text-lg font-semibold text-gray-700 mb-1">Monthly Active Users</h4>
+                            <div class="flex items-center justify-between">
+                                <span class="text-3xl font-bold text-gray-900">{{ $monthlyActiveUsers }}</span>
+                                @if(isset($monthlyActiveUsersGrowth))
+                                    <div class="flex items-center {{ $monthlyActiveUsersGrowth >= 0 ? 'text-green-500' : 'text-red-500' }}">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="{{ $monthlyActiveUsersGrowth >= 0 
+                                                    ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' 
+                                                    : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}" />
+                                        </svg>
+                                        <span class="font-medium">{{ abs($monthlyActiveUsersGrowth) }}%</span>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
