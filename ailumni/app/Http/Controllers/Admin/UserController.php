@@ -4,64 +4,55 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the users.
-     */
-    
-     public function index(Request $request)
-{
-    // Default sort column and direction
-    $sortColumn = $request->get('sort', 'name'); 
-    $sortDirection = $request->get('direction', 'asc'); 
+    protected $activityLogService;
 
-    // Validate sort column and direction
-    $validSortColumns = ['name', 'email', 'role', 'student_id'];
-    $validSortDirections = ['asc', 'desc'];
-
-    if (!in_array($sortColumn, $validSortColumns) || !in_array($sortDirection, $validSortDirections)) {
-        $sortColumn = 'name';
-        $sortDirection = 'asc';
+    public function __construct(ActivityLogService $activityLogService)
+    {
+        $this->activityLogService = $activityLogService;
     }
 
-    // Get search query
-    $search = $request->get('search');
+    public function index(Request $request)
+    {
+        $sortColumn = $request->get('sort', 'name'); 
+        $sortDirection = $request->get('direction', 'asc'); 
 
-    // Fetch users with search and sort
-    $users = User::when($search, function ($query) use ($search) {
-        return $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', '%' . $search . '%')
-                ->orWhere('email', 'like', '%' . $search . '%')
-                ->orWhere('student_id', 'like', '%' . $search . '%');
-        });
-    })
-    ->orderBy($sortColumn, $sortDirection)
-    ->get();
+        $validSortColumns = ['name', 'email', 'role', 'student_id'];
+        $validSortDirections = ['asc', 'desc'];
 
-    // Check if the request is an AJAX request
-    if ($request->ajax()) {
-        return view('admin.users.partials.table_rows', compact('users'))->render();
+        if (!in_array($sortColumn, $validSortColumns) || !in_array($sortDirection, $validSortDirections)) {
+            $sortColumn = 'name';
+            $sortDirection = 'asc';
+        }
+
+        $search = $request->get('search');
+
+        $users = User::when($search, function ($query) use ($search) {
+            return $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('student_id', 'like', '%' . $search . '%');
+            });
+        })
+        ->orderBy($sortColumn, $sortDirection)
+        ->get();
+
+        if ($request->ajax()) {
+            return view('admin.users.partials.table_rows', compact('users'))->render();
+        }
+
+        return view('admin.users.index', compact('users', 'sortColumn', 'sortDirection', 'search'));
     }
 
-    // Pass the users, sort column, sort direction, and search term to the main view
-    return view('admin.users.index', compact('users', 'sortColumn', 'sortDirection', 'search'));
-}
-
-
-    /**
-     * Show the form for creating a new user.
-     */
     public function create()
     {
         return view('admin.users.create');
     }
 
-    /**
-     * Store a newly created user in the database.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -72,28 +63,24 @@ class UserController extends Controller
             'student_id' => 'required|string',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']),
-            'role' => $validatedData['role'], // Assuming role_id is an integer
+            'role' => $validatedData['role'],
             'student_id' => $validatedData['student_id'],
         ]);
+
+        $this->activityLogService->log('user', 'Created new user: ' . $user->name);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
-    /**
-     * Show the form for editing the specified user.
-     */
     public function edit(User $user)
     {
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified user in the database.
-     */
     public function update(Request $request, User $user)
     {
         $validatedData = $request->validate([
@@ -105,14 +92,15 @@ class UserController extends Controller
 
         $user->update($validatedData);
 
+        $this->activityLogService->log('user', 'Updated user: ' . $user->name);
+
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
     }
 
-    /**
-     * Remove the specified user from the database.
-     */
     public function destroy(User $user)
     {
+        $this->activityLogService->log('user', 'Deleted user: ' . $user->name);
+
         $user->delete();
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
     }

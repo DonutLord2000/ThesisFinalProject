@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\NewsPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\ActivityLog;
+use App\Services\ActivityLogService;
 
 class NewsPostController extends Controller
 {
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
+    {
+        $this->activityLogService = $activityLogService;
+    }
     public function index()
     {
         $posts = NewsPost::where(function($query) {
@@ -53,6 +61,8 @@ class NewsPostController extends Controller
 
         $post = NewsPost::create($validated);
 
+        $this->activityLogService->log('news', action: 'Created a post: ' . $post->title);
+
         return redirect()->route('news.index')->with('success', 'News post created successfully.');
     }
 
@@ -65,6 +75,9 @@ class NewsPostController extends Controller
             Storage::disk('public')->delete($post->video);
         }
         $post->delete();
+
+        $this->activityLogService->log('news', 'Deleted a post: ' . $post->title);
+
         return redirect()->route('news.index')->with('success', 'News post deleted successfully.');
     }
 }

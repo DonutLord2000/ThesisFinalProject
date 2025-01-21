@@ -8,6 +8,7 @@ use App\Http\Controllers\Alumni\AlumniController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\NewsPostController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Admin\Tracer\TracerStudyController;
 use App\Http\Controllers\Admin\Tracer\AdminTracerController;
 use App\Http\Controllers\Alumni\ProfileController;
@@ -126,4 +127,6 @@ Route::group(['middleware' => 'admin'], function () {
     Route::get('/verification-documents/{id}', [VerificationController::class, 'showDocument'])->name('verification.show-document');
     Route::put('/verification-requests/{verificationRequest}/approve', [VerificationController::class, 'approve'])->name('verification.approve');
     Route::put('/verification-requests/{verificationRequest}/reject', [VerificationController::class, 'reject'])->name('verification.reject');
+
+    Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });

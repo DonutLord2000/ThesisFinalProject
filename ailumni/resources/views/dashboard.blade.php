@@ -8,7 +8,6 @@
     
     <!-- CHART FOR ALUMNI -->
     <div class="py-12">
-        @if(auth()->user()->role === 'admin')
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8">
                 <h2 class="text-3xl font-bold text-gray-900 mb-8">Alumni Statistics</h2>
@@ -108,7 +107,7 @@
                 </div>                              
                 
             </div>
-            @endif
+            
 
             <div class="max-w-7xl mx-auto">
                 <div class="mt-8 bg-white p-6 rounded-lg shadow-md">

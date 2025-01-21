@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Alumni;
 use App\Http\Controllers\Controller;
 use App\Models\VerificationRequest;
 use App\Models\VerificationDocument;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,13 @@ use Illuminate\Support\Facades\Log;
 
 class VerificationController extends Controller
 {
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
+    {
+        $this->activityLogService = $activityLogService;
+    }
+
     public function index()
     {
         $pendingRequests = VerificationRequest::with(['user', 'documents'])
@@ -26,6 +34,7 @@ class VerificationController extends Controller
 
         return view('admin.verification-requests.index', compact('pendingRequests', 'processedRequests'));
     }
+
     public function store(Request $request)
     {
         Log::info('Verification request initiated', ['user_id' => auth()->id()]);
@@ -70,6 +79,8 @@ class VerificationController extends Controller
             DB::commit();
             Log::info('Verification request submitted successfully', ['request_id' => $verificationRequest->id]);
 
+            $this->activityLogService->log('verification request', 'Submitted verification request');
+
             return redirect()->back()->with('success', 'Verification request submitted successfully');
 
         } catch (\Exception $e) {
@@ -91,9 +102,10 @@ class VerificationController extends Controller
 
         $verificationRequest->delete();
 
+        $this->activityLogService->log('verification request', 'Cancelled verification request');
+
         return redirect()->back()->with('success', 'Verification request cancelled successfully.');
     }   
-
 
     public function review(Request $request, VerificationRequest $verificationRequest)
     {
@@ -110,6 +122,8 @@ class VerificationController extends Controller
         if ($request->status === 'approved') {
             $verificationRequest->user->profile->update(['is_verified' => true]);
         }
+
+        $this->activityLogService->log('verification', 'Reviewed verification request: ' . $request->status);
 
         return redirect()->back()->with('success', 'Verification request updated successfully');
     }
@@ -133,6 +147,8 @@ class VerificationController extends Controller
         $verificationRequest->update(['status' => 'approved']);
         $verificationRequest->user->profile->update(['is_verified' => true]);
 
+        $this->activityLogService->log('verification', 'Approved verification request for user: ' . $verificationRequest->user->name);
+
         return redirect()->back()->with('success', 'Verification request approved successfully');
     }
 
@@ -140,6 +156,8 @@ class VerificationController extends Controller
     {
         $verificationRequest->update(['status' => 'rejected']);
         $verificationRequest->user->profile->update(['is_verified' => false]);
+
+        $this->activityLogService->log('verification', 'Rejected verification request for user: ' . $verificationRequest->user->name);
 
         return redirect()->back()->with('success', 'Verification request rejected successfully');
     }

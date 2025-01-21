@@ -3,15 +3,22 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Alumnus;
+use App\Http\Controllers\Controller;
+use App\Services\ActivityLogService;
+use Illuminate\Http\Request;
 
 class AlumniController extends Controller
 {
+    protected $activityLogService;
+
+    public function __construct(ActivityLogService $activityLogService)
+    {
+        $this->activityLogService = $activityLogService;
+    }
+
     public function index(Request $request)
     {
-        // Default sort column and direction
         $sortColumn = $request->get('sort', 'name');
         $sortDirection = $request->get('direction', 'asc');
 
@@ -107,11 +114,15 @@ class AlumniController extends Controller
 
         $alumnus->update($validated);
 
+        $this->activityLogService->log('alumni', 'Updated alumnus: ' . $alumnus->name);
+
         return redirect()->route('alumni.show', $alumnus)->with('success', 'Alumnus updated successfully.');
     }
 
     public function destroy(Alumnus $alumnus)
     {
+        $this->activityLogService->log('alumni', 'Deleted alumnus: ' . $alumnus->name);
+
         $alumnus->delete();
         return redirect()->route('alumni.index')->with('success', 'Alumnus deleted successfully.');
     }
@@ -148,9 +159,8 @@ class AlumniController extends Controller
 
         $alumnus = Alumnus::create($validated);
 
+        $this->activityLogService->log('alumni', 'Created new alumnus: ' . $alumnus->name);
+
         return redirect()->route('alumni.show', $alumnus)->with('success', 'Alumnus created successfully.');
     }
-
-
 }
-

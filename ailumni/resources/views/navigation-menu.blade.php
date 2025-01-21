@@ -64,12 +64,6 @@
                     </x-nav-link>
                 </div>
 
-                @if (auth()->user()->role == 'student')
-                    <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Lessons') }}
-                    </x-nav-link>
-                @endif
-
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('tracer-study.form') }}" :active="request()->routeIs('tracer-study.form')">
                         {{ __('Tracer Study') }}
@@ -79,6 +73,12 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
                         {{ __('Alumni Profile') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('activity-logs.index') }}" :active="request()->routeIs('activity-logs.index')">
+                        {{ __('Activity Logs') }}
                     </x-nav-link>
                 </div>
             </div>
