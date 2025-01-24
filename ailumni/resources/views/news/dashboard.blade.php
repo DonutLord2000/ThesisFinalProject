@@ -21,16 +21,19 @@
                             </div>
                             <div class="bg-gray-200 text-black py-2 px-4 flex items-center justify-between">
                                 <h2 class="ml-4 font-semibold">{{ $post->title }}</h2>
-                                <form action="{{ route('news.destroy', $post) }}" method="POST" class="inline" onsubmit="return confirmDeletion()">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="hover:text-gray-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </form>
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ route('news.edit', $post) }}" class="text-blue-600 hover:text-blue-400 font-semibold">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('news.destroy', $post) }}" method="POST" class="inline" onsubmit="return confirmDeletion()">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-400 font-semibold">
+                                            Delete
+                                        </button>
+                                    </form>                                    
                             </div>
+                        </div>
                             <div class="p-4 pl-12">
                                 @if($post->image)
                                     <img src="{{ Storage::url($post->image) }}" alt="News post image" class="mb-2 mt-2 mr-4 rounded-lg" style="max-width: 40rem; max-height: 24rem; object-contain;">

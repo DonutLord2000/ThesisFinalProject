@@ -80,4 +80,43 @@ class NewsPostController extends Controller
 
         return redirect()->route('news.index')->with('success', 'News post deleted successfully.');
     }
+
+    public function edit(NewsPost $post)
+    {
+        return view('news.edit', compact('post'));
+    }
+
+    public function update(Request $request, NewsPost $post)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'visible_to' => 'required|in:students,alumni,everyone',
+            'source' => 'required|string|max:255',
+            'image' => 'nullable|image|max:2048',
+            'video' => 'nullable|mimetypes:video/avi,video/mpeg,video/quicktime,video/mp4|max:20480',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $imagePath = $request->file('image')->store('news_images', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        if ($request->hasFile('video')) {
+            if ($post->video) {
+                Storage::disk('public')->delete($post->video);
+            }
+            $videoPath = $request->file('video')->store('news_videos', 'public');
+            $validated['video'] = $videoPath;
+        }
+
+        $post->update($validated);
+
+        $this->activityLogService->log('news', action: 'Updated a post: ' . $post->title);
+
+        return redirect()->route('news.index')->with('success', 'News post updated successfully.');
+    }
 }

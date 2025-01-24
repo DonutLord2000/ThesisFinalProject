@@ -45,6 +45,8 @@ Route::middleware([
         Route::get('/news/create', [NewsPostController::class, 'create'])->name('news.create');
         Route::post('/news', [NewsPostController::class, 'store'])->name('news.store');
         Route::delete('/news/{post}', [NewsPostController::class, 'destroy'])->name('news.destroy');
+        Route::get('/news/{post}/edit', [NewsPostController::class, 'edit'])->name('news.edit');
+        Route::put('/news/{post}', [NewsPostController::class, 'update'])->name('news.update');
     });
 });
 
