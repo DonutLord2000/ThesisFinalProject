@@ -1,32 +1,56 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-6 mx-auto" style="width: 70rem">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-6 mx-auto w-full lg:w-[70rem]">
                 <div class="p-6">
-                    <div class="flex items-start space-x-3">
-                        <img src="{{ $thread->user->profile_photo_url }}" alt="{{ $thread->user->name }}" class="w-12 h-12 rounded-full">
-                        <div class="flex-grow">
-                            <h3 class="text-xl font-semibold text-gray-900">
-                                {{ $thread->user->name }}
-                                @php
-                                $bgColor = match($thread->user->role) {
-                                    'alumni' => 'inline-block px-2 py-1 bg-green-500 text-green-800 rounded',
-                                                'admin' => 'text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded',
-                                                'student' => 'inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded',
-                                    default => 'bg-gray-200 text-gray-700',
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-start space-x-3">
+                            <img src="{{ $thread->user->profile_photo_url }}" alt="{{ $thread->user->name }}" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">
+                                    {{ $thread->user->name }}
+                                    @php
+                                    $bgColor = match($thread->user->role) {
+                                        'alumni' => 'inline-block px-2 py-1 bg-green-500 text-green-800 rounded',
+                                                    'admin' => 'text-white inline-block px-2 py-1 bg-red-500 text-red-800 rounded',
+                                                    'student' => 'inline-block px-2 py-1 bg-blue-500 text-blue-800 rounded',
+                                        default => 'bg-gray-200 text-gray-700',
                                     };
-                                @endphp
+                                    @endphp
 
-                                <span class="text-sm font-normal {{ $bgColor }} px-2 py-1 rounded-full ml-2">
-                                    {{ $thread->user->role }}
-                                </span>
-
-                            </h3>
-                            <p class="text-sm text-gray-500">
-                                {{ $thread->created_at->format('M d, Y h:i A') }}
-                            </p>
-                            <p class="mt-4 text-gray-700 text-lg">{{ $thread->content }}</p>
+                                    <span class="text-sm font-normal {{ $bgColor }} px-2 py-1 rounded-full ml-2">
+                                        {{ $thread->user->role }}
+                                    </span>
+                                </h3>
+                                <p class="text-sm text-gray-500">
+                                    {{ $thread->created_at->format('M d, Y h:i A') }}
+                                </p>
+                            </div>
                         </div>
+                        @if(auth()->user()->id === $thread->user_id || auth()->user()->role === 'admin')
+                            <div class="relative inline-block text-left">
+                                <div>
+                                    <button type="button" class="inline-flex justify-center w-8 h-8 rounded-full border border-gray-300 shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                        <svg class="w-5 h-5 m-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" id="dropdown-menu">
+                                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                        <a href="{{ route('threads.edit', $thread) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Edit</a>
+                                        <form action="{{ route('threads.destroy', $thread) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="flex-grow">
+                        <p class="mt-4 text-gray-700 text-lg">{{ $thread->content }}</p>
                     </div>
                 </div>
                 <div class="px-6 py-4 bg-gray-50 flex justify-between items-center">
@@ -37,19 +61,25 @@
                             </svg>
                             <span class="upvote-count">{{ $thread->upvotes }}</span>
                         </button>
-                        <button class="ml-2 react-btn flex items-center space-x-1 text-gray-500 hover:text-pink-500 transition-colors duration-200" data-type="heart" data-thread="{{ $thread->id }}">
+                        <button class="react-btn flex items-center space-x-1 text-gray-500 hover:text-pink-500 transition-colors duration-200" data-type="heart" data-thread="{{ $thread->id }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                             <span class="heart-count">{{ $thread->hearts }}</span>
                         </button>
                     </div>
+                    <button class="flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>{{ $thread->comments_count }} comments</span>
+                    </button>
                 </div>
             </div>
             <h4 class="text-center mx-auto text-2xl font-bold mb-4 text-gray-900">Comments</h4>
             <div class="space-y-4 mb-6">
                 @foreach ($thread->comments as $comment)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg shadow-xl mx-auto mb-2" style="width: 70rem">
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg shadow-xl mx-auto mb-2 w-full lg:w-[70rem]">
                         <div class="p-6">
                             <div class="flex items-start space-x-3">
                                 <img src="{{ $comment->user->profile_photo_url }}" alt="{{ $comment->user->name }}" class="w-10 h-10 rounded-full">
@@ -78,7 +108,7 @@
                 @endforeach
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg shadow-xl mx-auto" style="width: 70rem">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg shadow-xl mx-auto w-full lg:w-[70rem]">
                 <div class="p-6">
                     <h3 class="text-lg font-semibold mb-4">Add a comment</h3>
                     <form action="{{ route('threads.comments.store', $thread) }}" method="POST">
@@ -166,5 +196,25 @@
         });
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const optionsMenu = document.getElementById('options-menu');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        if (optionsMenu && dropdownMenu) {
+            optionsMenu.addEventListener('click', function() {
+                dropdownMenu.classList.toggle('hidden');
+            });
+
+            // Close the dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!optionsMenu.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+            });
+        }
+    });
+</script>
 @endpush
 </x-app-layout>
+

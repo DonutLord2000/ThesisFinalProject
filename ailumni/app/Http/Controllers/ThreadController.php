@@ -103,4 +103,32 @@ class ThreadController extends Controller
         'heart' => $thread->reactions()->where('user_id', $user->id)->where('type', 'heart')->exists(),
     ]);
 }
+
+    public function edit(Thread $thread)
+    {
+        $this->authorize('update', $thread);
+        return view('threads.edit', compact('thread'));
+    }
+
+    public function update(Request $request, Thread $thread)
+    {
+        $this->authorize('update', $thread);
+        
+        $validated = $request->validate([
+            'content' => 'required',
+        ]);
+
+        $thread->update($validated);
+
+        return redirect()->route('threads.show', $thread);
+    }
+
+    public function destroy(Thread $thread)
+    {
+        $this->authorize('delete', $thread);
+        
+        $thread->delete();
+
+        return redirect()->route('threads.index');
+    }
 }

@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/threads', [ThreadController::class, 'store'])->name('threads.store');
     Route::post('/threads/{thread}/comments', [ThreadController::class, 'storeComment'])->name('threads.comments.store');
     Route::post('/threads/{thread}/react', [ThreadController::class, 'react'])->name('threads.react');
+    Route::resource('threads', ThreadController::class);
 });
 
 Route::middleware(['auth'])->group(function () {
