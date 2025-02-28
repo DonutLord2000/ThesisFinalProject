@@ -118,6 +118,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/verification/{verificationRequest}/cancel', [VerificationController::class, 'cancel'])->name('verification.cancel');
     Route::get('/alumni-profile/{user}', [ProfileController::class, 'show'])->name('alumni.profile.show');
     Route::get('/alumni-profiles', [ProfileController::class, 'index'])->name('alumni.all-profiles.index');
+
+    Route::post('/profile/accept-eula', [App\Http\Controllers\Alumni\ProfileController::class, 'acceptEula'])->name('profile.accept-eula');
 });
 
 Route::group(['middleware' => 'admin'], function () {

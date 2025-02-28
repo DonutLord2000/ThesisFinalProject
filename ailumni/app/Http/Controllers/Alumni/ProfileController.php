@@ -42,6 +42,7 @@ class ProfileController extends Controller
 
         return view('alumni.all-profiles', compact('profiles'));
     }
+    
     public function show(User $user)
     {
         $user->load(['profile', 'experiences', 'education', 'verificationRequests' => function ($query) {
@@ -50,10 +51,18 @@ class ProfileController extends Controller
 
         return view('alumni.show-profile', compact('user'));
     }
+    
     public function edit()
     {
         $user = auth()->user()->load(['profile', 'experiences', 'education']);
-        return view('profile.edit', compact('user'));
+        $showEula = false;
+        
+        // Check if user has a profile and if they've accepted the EULA
+        if (!$user->profile || !$user->profile->eula_accepted) {
+            $showEula = true;
+        }
+        
+        return view('profile.edit', compact('user', 'showEula'));
     }
 
     public function update(Request $request)
@@ -87,6 +96,17 @@ class ProfileController extends Controller
         $profile->save();
 
         return redirect()->route('profile.edit')->with('success', 'Profile updated successfully');
+    }
+
+    public function acceptEula(Request $request)
+    {
+        $user = auth()->user();
+        $profile = $user->profile ?? new Profile(['user_id' => $user->id]);
+        
+        $profile->eula_accepted = true;
+        $profile->save();
+        
+        return redirect()->route('profile.edit')->with('success', 'EULA accepted successfully');
     }
 
     public function addExperience(Request $request)
@@ -141,6 +161,4 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.edit')->with('success', 'Education deleted successfully');
     }
-
-
 }
