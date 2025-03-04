@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth', 'admin'], 'prefix' => 'admin', 'as' => 'a
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['verified'])->group(function () {
     Route::get('/threads', [ThreadController::class, 'index'])->name('threads.index');
     Route::get('/threads/{thread}', [ThreadController::class, 'show'])->name('threads.show');
     Route::get('/threads/{thread}/reaction-status', [ThreadController::class, 'getReactionStatus']);

@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-auth-layout>
     <div class="relative min-h-screen">
         <!-- Background image with blur -->
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('images/bg.png') }}'); filter: blur(8px);"></div>
@@ -105,4 +105,4 @@
             }
         }
     </script>
-</x-guest-layout>
+</x-auth-layout>

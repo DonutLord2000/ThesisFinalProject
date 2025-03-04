@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-auth-layout>
     <!-- Wrapper for background image and blur effect -->
     <div class="relative min-h-screen">
        <!-- Background image with blur applied -->
@@ -200,7 +200,7 @@
            </x-authentication-card>
        </div>
    </div>
-</x-guest-layout>
+</x-auth-layout>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
