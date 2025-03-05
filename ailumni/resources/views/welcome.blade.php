@@ -53,31 +53,65 @@
                 background-position: 0% 50%;
             }
         }
+
+        /* Mobile menu styles */
+        .mobile-menu {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none;
+            }
+            .mobile-menu {
+                display: block;
+            }
+            .mobile-menu-items {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: linear-gradient(90deg, #AB0A0A 0%, #8B0000 100%);
+                padding: 1rem;
+                z-index: 50;
+            }
+            .mobile-menu-items.active {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
     <!-- Navigation -->
     <nav class="shadow-lg nav-gradient">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20">
+            <div class="flex justify-between h-16">
                 <div class="flex-shrink-0 flex items-center">
-                    <img src="{{ asset('images/logo-white.png') }}" alt="GRC Logo" class="h-11">
+                    <img src="{{ asset('images/logo-white.png') }}" alt="GRC Logo" class="h-10">
+                </div>
+                
+                <!-- Desktop Navigation Menu -->
+                <div class="hidden md:flex items-center space-x-4">
+                    
+                    <a href="tracer-study" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Alumni Tracer</a>
+                    <a href="#" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Admissions</a>
+                    <a href="about-us" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">About Us</a>
+                    <a href="contact-directory" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Contact Us</a>
                 </div>
                 
                 @if (Route::has('login'))
                     <div class="flex items-center space-x-4">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-red-800 font-semibold">Dashboard</a>
+                            <a href="{{ url('/dashboard') }}" class="text-white hover:text-black font-semibold">Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-red-700 transition duration-300">Login</a>
+                            <a href="{{ route('login') }}" class="bg-gray-800 text-white px-4 py-1.5 rounded-md hover:bg-red-700 transition duration-300 text-sm">Login</a>
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}" class="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition duration-300">Register</a>
+                                <a href="{{ route('register') }}" class="bg-gray-800 text-white px-4 py-1.5 rounded-md hover:bg-gray-700 transition duration-300 text-sm">Register</a>
                             @endif
                         @endauth
                     </div>
                 @endif
-            </div>
-        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -157,6 +191,18 @@
     }
 
     typeEffect();
+
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenuItems = document.getElementById('mobile-menu-items');
+        
+        if (mobileMenuButton && mobileMenuItems) {
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenuItems.classList.toggle('active');
+            });
+        }
+    });
     </script>
 
 
@@ -231,7 +277,7 @@
                         <li><a href="#" class="text-blue-600 hover:text-blue-800">About Us</a></li>
                         <li><a href="#" class="text-blue-600 hover:text-blue-800">Contact Us</a></li>
                         <li><a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a></li>
-                        <li><a href="#" class="text-blue-600 hover:text-blue-800">Library Website</a></li>
+                        <li><a href="#" class="text-blue-600 hover:text-blue-800">Alumni Tracer</a></li>
                     </ul>
                 </div>
                 <div>
@@ -257,3 +303,4 @@
     </footer>
 </body>
 </html>
+

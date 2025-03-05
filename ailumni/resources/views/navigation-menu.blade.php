@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('welcome') }}">
                         <img src="{{ asset('images/grc.png') }}" alt="Custom Logo" style="width: 100px; height: 50px;">
                     </a>
                 </div>

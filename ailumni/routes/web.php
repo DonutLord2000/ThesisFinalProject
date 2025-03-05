@@ -29,7 +29,7 @@ use App\Http\Controllers\Alumni\VerificationController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+    })->name('welcome');
 
 Route::middleware([
     'auth:sanctum',
@@ -69,7 +69,7 @@ Route::middleware(['verified'])->group(function () {
     Route::resource('threads', ThreadController::class);
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth' , 'verified'])->group(function () {
     Route::post('/chatbot', [ChatbotController::class, 'chat']);
 });
 
