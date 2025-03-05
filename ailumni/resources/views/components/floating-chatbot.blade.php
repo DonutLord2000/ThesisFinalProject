@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Hide thinking indicator
             thinkingIndicator.classList.add('hidden');
 
-            addMessage('assistant', 'Sorry, there was an error processing your request.');
+            addMessage('assistant', 'Sorry but you have to login and verify your account to use this service');
         }
     });
 

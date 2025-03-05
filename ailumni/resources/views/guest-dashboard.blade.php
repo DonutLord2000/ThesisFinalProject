@@ -8,28 +8,30 @@
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg p-8 mt-10">
-                <h2 class="text-3xl font-bold text-gray-900 mb-8">Alumni Statistics</h2>
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg p-6 mt-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Alumni Statistics</h2>
                 
                 <!-- Top Row Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <!-- Total Alumni Card -->
-                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 transform transition-all hover:scale-105">
-                        <h3 class="text-xl font-semibold text-gray-700 mb-4">Total Alumni</h3>
-                        <p class="text-5xl font-bold text-blue-600">{{ $totalAlumni }}</p>
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg shadow-md p-4 transform transition-all hover:scale-105">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Total Alumni</h3>
+                        <p class="text-4xl font-bold text-blue-600">{{ $totalAlumni }}</p>
                     </div>
-
+            
                     <!-- Graduation Year Trends Card -->
-                    <div class="bg-gradient-to-br from-red-100 to-yellow-100 rounded-xl shadow-lg p-6">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="bg-gradient-to-br from-red-100 to-yellow-100 rounded-lg shadow-md p-4 transform transition-all hover:scale-105">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v4m-4-4v4m8-4v4M5 8l7-7 7 7M5 8h14v11H5V8z" />
                             </svg>
                             Graduation Year Trends
                         </h3>
-                        <canvas id="graduationChart" class="w-full h-full"></canvas>
+                        <canvas id="graduationChart" class="w-full h-32"></canvas>
                     </div>                                
                 </div>
+
+            
 
                 <!-- Bottom Row Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -99,10 +101,11 @@
                         </table>
                     </div>
                 </div>
+            </div>
 
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg p-6 mt-6">
                 <!-- Latest News -->
-                <div class="mt-12">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Latest News</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Latest News & Events</h2>
                     
                     @if($newsPosts->count() > 0)
                         @foreach ($newsPosts as $post)
