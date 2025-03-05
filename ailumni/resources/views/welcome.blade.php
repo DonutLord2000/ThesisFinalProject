@@ -95,7 +95,7 @@
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="dashboard" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Dashboard</a>
                     <a href="tracer-study" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Alumni Tracer</a>
-                    <a href="#" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Admissions</a>
+                    <a href="scholarships" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Scholarship</a>
                     <a href="about-us" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">About Us</a>
                     <a href="contact-directory" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Contact Us</a>
                 </div>

@@ -15,6 +15,9 @@ use App\Http\Controllers\Alumni\ProfileController;
 use App\Http\Controllers\Alumni\ExperienceController;
 use App\Http\Controllers\Alumni\EducationController;
 use App\Http\Controllers\Alumni\VerificationController;
+use App\Http\Controllers\ScholarshipController;
+use App\Http\Controllers\Admin\ScholarshipTabController;
+use App\Http\Controllers\Admin\ScholarshipFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -135,3 +138,31 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 });
+
+
+// Public scholarship routes
+Route::get('/scholarships', [ScholarshipController::class, 'index'])->name('scholarships.index');
+Route::get('/scholarships/download/{form}', [ScholarshipController::class, 'downloadForm'])->name('scholarships.download-form');
+Route::get('/scholarships/apply', [ScholarshipController::class, 'showApplicationForm'])->name('scholarships.apply');
+Route::post('/scholarships/apply', [ScholarshipController::class, 'storeApplication'])->name('scholarships.store-application');
+
+// Document viewing route (with auth check in controller)
+Route::get('/scholarships/documents/{document}', [ScholarshipController::class, 'viewDocument'])->name('scholarships.view-document');
+
+// Admin routes
+Route::middleware(['auth:sanctum', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    // Scholarship Applications
+    Route::get('/scholarships', [ScholarshipController::class, 'adminIndex'])->name('scholarships.index');
+    Route::get('/scholarships/{application}', [ScholarshipController::class, 'adminShow'])->name('scholarships.show');
+    Route::put('/scholarships/{application}/review', [ScholarshipController::class, 'markUnderReview'])->name('scholarships.review');
+    Route::put('/scholarships/{application}/approve', [ScholarshipController::class, 'approve'])->name('scholarships.approve');
+    Route::put('/scholarships/{application}/reject', [ScholarshipController::class, 'reject'])->name('scholarships.reject');
+    
+    // Scholarship Tabs Management
+    Route::resource('scholarship-tabs', ScholarshipTabController::class);
+    
+    // Scholarship Forms Management
+    Route::resource('scholarship-forms', ScholarshipFormController::class)->except(['edit', 'update', 'show']);
+    Route::put('/scholarship-forms/{scholarshipForm}/set-active', [ScholarshipFormController::class, 'setActive'])->name('scholarship-forms.set-active');
+});
+

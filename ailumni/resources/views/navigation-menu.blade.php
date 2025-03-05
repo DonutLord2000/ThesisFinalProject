@@ -17,6 +17,12 @@
                     </x-nav-link>
                 </div>
 
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link href="{{ route('scholarships.index') }}" :active="request()->routeIs('scholarships.index')">
+                        {{ __('Scholarship') }}
+                    </x-nav-link>
+                </div>
+
                 <!-- Admin Navigation Links - Only show if authenticated and admin -->
                 @auth
                     @if (auth()->user()->role == 'admin')
@@ -28,7 +34,7 @@
                                 </svg>
                             </button>
                             
-                            <div class="absolute left-0 hidden mt-20 w-48 bg-white border border-gray-200 rounded-md shadow-lg group-hover:block">
+                            <div class="absolute left-0 hidden mt-40 w-48 bg-white border border-gray-200 rounded-md shadow-lg group-hover:block">
                                 <x-dropdown-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
                                     {{ __('User Management') }}
                                 </x-dropdown-link>
@@ -41,14 +47,17 @@
                                 <x-dropdown-link href="{{ route('alumni.index') }}" :active="request()->routeIs('alumni.index')">
                                     {{ __('Alumni Index') }}
                                 </x-dropdown-link>
+                                <x-dropdown-link href="{{ route('verification.index') }}" :active="request()->routeIs('verification.index')">
+                                    {{ __('Verification Request Management') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link href="{{ route('admin.scholarships.index') }}" :active="request()->routeIs('admin.scholarships.index')">
+                                    {{ __('Scholarship Request') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link href="{{ route('activity-logs.index') }}" :active="request()->routeIs('activity-logs.index')">
+                                    {{ __('Activity Logs') }}
+                                </x-dropdown-link>
                             </div>
                         </div>
-                    @endif
-
-                    @if (auth()->user()->role == 'admin')
-                        <x-nav-link class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex" href="{{ route('verification.index') }}" :active="request()->routeIs('verification.index')">
-                            {{ __('Verification Request Management') }}
-                        </x-nav-link>
                     @endif
                 @endauth
 
@@ -61,7 +70,7 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('alumni.all-profiles.index') }}" :active="request()->routeIs('alumni.all-profiles.index')">
-                        {{ __('All Profiles') }}
+                        {{ __('Alumni Profiles') }}
                     </x-nav-link>
                 </div>
 
@@ -75,13 +84,7 @@
 
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <x-nav-link href="{{ route('profile.edit') }}" :active="request()->routeIs('profile.edit')">
-                            {{ __('Alumni Profile') }}
-                        </x-nav-link>
-                    </div>
-
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('activity-logs.index') }}" :active="request()->routeIs('activity-logs.index')">
-                            {{ __('Activity Logs') }}
+                            {{ __('My Profile') }}
                         </x-nav-link>
                     </div>
                 @endauth
