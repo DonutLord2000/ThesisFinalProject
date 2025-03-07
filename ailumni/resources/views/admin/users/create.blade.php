@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('title', 'GRC - User Management')
 @section('content')
     <div class="container mx-auto mt-10">
         <h1 class="text-center text-2xl font-semibold mb-6">Create New User</h1>

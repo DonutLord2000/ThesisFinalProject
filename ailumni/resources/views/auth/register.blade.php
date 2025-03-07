@@ -1,4 +1,5 @@
 <x-auth-layout>
+    @section('title', 'GRC - Register')
     <!-- Wrapper for background image and blur effect -->
     <div class="relative min-h-screen">
        <!-- Background image with blur applied -->

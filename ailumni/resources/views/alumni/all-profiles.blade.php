@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'GRC - Alumni Profiles')
     <div class="py-12" x-data="{ search: '', showVerified: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white shadow-xl rounded-lg overflow-hidden">

@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-
+@section('title', 'GRC - User Management')
 @section('content')
 
     <div>

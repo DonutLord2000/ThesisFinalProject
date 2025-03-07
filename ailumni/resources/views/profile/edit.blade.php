@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'GRC - User Profile')
     <!-- EULA Modal -->
     <x-eula-modal :show="$showEula ?? false" />
 

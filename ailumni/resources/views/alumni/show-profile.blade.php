@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'GRC - Alumni')
     <div class="min-h-screen bg-gray-100">
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             <!-- Profile Header Section -->

@@ -1,4 +1,5 @@
 <x-guest-layout>
+    @section('title', 'GRC - Authentication')
 <!-- Wrapper for background image and blur effect -->
 <div class="relative min-h-screen">
     <!-- Background image with blur applied -->

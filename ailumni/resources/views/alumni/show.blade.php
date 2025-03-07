@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'GRC - Alumni')
     <x-slot name="header">
         <h2 class="font-semibold text-3xl text-gray-900 leading-tight">
             {{ __('Alumnus Details') }}

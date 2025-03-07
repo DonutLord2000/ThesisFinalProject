@@ -1,5 +1,5 @@
 @extends('layouts.alumni')
-
+@section('title', 'GRC - Tracer Study')
 @section('content')
 
     
